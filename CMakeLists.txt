@@ -11,6 +11,28 @@ cmake_minimum_required(VERSION 3.21)
 
 project(MetalCpp LANGUAGES CXX VERSION 27.0.1)
 
+if(NOT APPLE)
+	message(FATAL_ERROR
+		"metal-cpp links against Apple frameworks (Metal, MetalKit, AppKit, "
+		"Foundation, QuartzCore) and can only be built on Apple platforms."
+	)
+endif()
+
+set(METAL_CPP_SUPPORTED_COMPILERS
+	"AppleClang"
+	"Clang"
+)
+
+if(NOT CMAKE_CXX_COMPILER_ID IN_LIST METAL_CPP_SUPPORTED_COMPILERS)
+	message(FATAL_ERROR
+		"metal-cpp only supports the LLVM Clang and Apple Clang compilers "
+		"(CMAKE_CXX_COMPILER_ID 'AppleClang' or 'Clang'), but the current C++ "
+		"compiler is '${CMAKE_CXX_COMPILER_ID}' "
+		"(${CMAKE_CXX_COMPILER}). Reconfigure with an LLVM-based toolchain, "
+		"e.g. -DCMAKE_CXX_COMPILER=clang++."
+	)
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(APPKIT_HEADERS
