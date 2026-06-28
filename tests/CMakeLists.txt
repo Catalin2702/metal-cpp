@@ -1,7 +1,12 @@
 #
-# Module: metal-cpp tests
-# File: tests/CMakeLists.txt
+# Module: tests
+# File: CMakeLists.txt
+# Created by: Catalin Chirosca
+# Created: 2026-06-29
+# Updated by: Catalin Chirosca
+# Updated: 2026-06-29
 #
+
 # Only configured when METALCPP_BUILD_TESTS is ON (see the root CMakeLists.txt),
 # which defaults to OFF when metal-cpp is consumed as a subdirectory / submodule.
 # GoogleTest is fetched on demand so it is never downloaded for consumers.
