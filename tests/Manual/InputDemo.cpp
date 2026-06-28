@@ -28,6 +28,7 @@ namespace
 			void DispatchMouseDown(NS::Event* pEvent) override { logMouse("mouseDown", pEvent); }
 			void DispatchMouseUp(NS::Event* pEvent) override { logMouse("mouseUp", pEvent); }
 			void DispatchMouseDragged(NS::Event* pEvent) override { logMouse("mouseDragged", pEvent); }
+			void DispatchMouseMoved(NS::Event* pEvent) override { logMouse("mouseMoved", pEvent); }
 			void DispatchRightMouseDown(NS::Event* pEvent) override { logMouse("rightMouseDown", pEvent); }
 			void DispatchScrollWheel(NS::Event* pEvent) override
 			{
@@ -83,9 +84,12 @@ namespace
 				_pView = MTK::View::alloc()->init(frame, _pDevice);
 				_pView->setEventDispatcher(&_logger);
 
+				// mouseMoved: is only delivered when the window opts in.
+				_pWindow->setAcceptsMouseMovedEvents(true);
+
 				_pWindow->setContentView(_pView);
 				_pWindow->setTitle(NS::String::string("metal-cpp input demo", NS::UTF8StringEncoding));
-				_pWindow->makeFirstResponder(_pView);
+				(void)_pWindow->makeFirstResponder(_pView);
 				_pWindow->makeKeyAndOrderFront(nullptr);
 
 				NS::Application::sharedApplication()->activateIgnoringOtherApps(true);
