@@ -242,3 +242,13 @@ target_link_libraries(METAL_CPP
 target_include_directories(METAL_CPP PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+# Build the tests only when metal-cpp is the top-level project (standalone
+# development). When consumed via add_subdirectory() / as a git submodule this
+# defaults to OFF, so the test sources and GoogleTest are never configured.
+option(METALCPP_BUILD_TESTS "Build the metal-cpp tests" ${PROJECT_IS_TOP_LEVEL})
+
+if(METALCPP_BUILD_TESTS)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
