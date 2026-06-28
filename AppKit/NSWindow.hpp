@@ -96,6 +96,10 @@ public:
 
 	void makeKeyAndOrderFront(const Object* pSender) const;
 
+	// Make pResponder the window's first responder (so it receives key events).
+	// Returns false if the responder refused to accept.
+	bool makeFirstResponder(const Object* pResponder) const;
+
 public:
 	void setContentView(const View* pContentView) const;
 	void setDelegate(const Object* pDelegate) const;
@@ -159,6 +163,10 @@ _NS_INLINE NS::Window* NS::Window::init(const CGRect& contentRect, const WindowS
 
 _NS_INLINE void NS::Window::makeKeyAndOrderFront(const Object* pSender) const {
 	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(makeKeyAndOrderFront_), pSender);
+}
+
+_NS_INLINE bool NS::Window::makeFirstResponder(const Object* pResponder) const {
+	return sendMessage<bool>(this, _APPKIT_PRIVATE_SEL(makeFirstResponder_), pResponder);
 }
 
 _NS_INLINE void NS::Window::setContentView(const View* pContentView) const {

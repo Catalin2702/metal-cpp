@@ -519,6 +519,8 @@ _APPKIT_PRIVATE_DEF_SEL(miniaturize_, "miniaturize:");
 
 _APPKIT_PRIVATE_DEF_SEL(toggleFullScreen_, "toggleFullScreen:");
 
+_APPKIT_PRIVATE_DEF_SEL(makeFirstResponder_, "makeFirstResponder:");
+
 // WindowDelegate
 _APPKIT_PRIVATE_DEF_SEL(windowDidResize_, "windowDidResize:");
 

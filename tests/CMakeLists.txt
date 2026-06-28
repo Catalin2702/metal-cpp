@@ -32,3 +32,14 @@ target_link_libraries(metal_cpp_tests PRIVATE
 
 include(GoogleTest)
 gtest_discover_tests(metal_cpp_tests)
+
+# Manual, interactive demo. Excluded from the default build (and from CTest)
+# because it opens a real window and runs an AppKit event loop. Build on demand:
+#   cmake --build <build> --target metal_cpp_input_demo
+add_executable(metal_cpp_input_demo EXCLUDE_FROM_ALL
+	Manual/InputDemo.cpp
+)
+
+target_link_libraries(metal_cpp_input_demo PRIVATE
+	METAL_CPP
+)
