@@ -67,6 +67,7 @@ set(FOUNDATION_HEADERS
 	Foundation/NSPrivate.hpp
 	Foundation/NSProcessInfo.hpp
 	Foundation/NSRange.hpp
+	Foundation/NSRunLoop.hpp
 	Foundation/NSSet.hpp
 	Foundation/NSSharedPtr.hpp
 	Foundation/NSString.hpp

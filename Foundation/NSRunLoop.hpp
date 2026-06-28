@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// Foundation/Foundation.hpp
+// Foundation/NSRunLoop.hpp
 //
 // Copyright 2020-2024 Apple Inc.
 //
@@ -22,27 +22,44 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#include "NSArray.hpp"
-#include "NSAutoreleasePool.hpp"
-#include "NSBundle.hpp"
-#include "NSData.hpp"
-#include "NSDate.hpp"
 #include "NSDefines.hpp"
-#include "NSDictionary.hpp"
-#include "NSEnumerator.hpp"
-#include "NSError.hpp"
-#include "NSLock.hpp"
-#include "NSNotification.hpp"
-#include "NSNumber.hpp"
 #include "NSObject.hpp"
 #include "NSPrivate.hpp"
-#include "NSProcessInfo.hpp"
-#include "NSRange.hpp"
-#include "NSRunLoop.hpp"
-#include "NSSet.hpp"
-#include "NSSharedPtr.hpp"
 #include "NSString.hpp"
-#include "NSTypes.hpp"
-#include "NSURL.hpp"
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+namespace NS
+{
+
+class RunLoop : public Referencing<RunLoop>
+{
+public:
+    static RunLoop* currentRunLoop();
+    static RunLoop* mainRunLoop();
+
+    // The default run-loop mode (NSDefaultRunLoopMode == "kCFRunLoopDefaultMode"),
+    // suitable for CADisplayLink::addToRunLoop(). Returned autoreleased.
+    static String*  defaultMode();
+};
+
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_NS_INLINE NS::RunLoop* NS::RunLoop::currentRunLoop()
+{
+    return Object::sendMessage<RunLoop*>(_NS_PRIVATE_CLS(NSRunLoop), _NS_PRIVATE_SEL(currentRunLoop));
+}
+
+_NS_INLINE NS::RunLoop* NS::RunLoop::mainRunLoop()
+{
+    return Object::sendMessage<RunLoop*>(_NS_PRIVATE_CLS(NSRunLoop), _NS_PRIVATE_SEL(mainRunLoop));
+}
+
+_NS_INLINE NS::String* NS::RunLoop::defaultMode()
+{
+    return String::string("kCFRunLoopDefaultMode", UTF8StringEncoding);
+}
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
