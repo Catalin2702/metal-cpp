@@ -519,6 +519,27 @@ _APPKIT_PRIVATE_DEF_SEL(miniaturize_, "miniaturize:");
 
 _APPKIT_PRIVATE_DEF_SEL(toggleFullScreen_, "toggleFullScreen:");
 
+// WindowDelegate
+_APPKIT_PRIVATE_DEF_SEL(windowDidResize_, "windowDidResize:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidMove_, "windowDidMove:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidBecomeKey_, "windowDidBecomeKey:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidResignKey_, "windowDidResignKey:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidMiniaturize_, "windowDidMiniaturize:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidDeminiaturize_, "windowDidDeminiaturize:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidEnterFullScreen_, "windowDidEnterFullScreen:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowDidExitFullScreen_, "windowDidExitFullScreen:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowWillClose_, "windowWillClose:");
+
+_APPKIT_PRIVATE_DEF_SEL(windowShouldClose_, "windowShouldClose:");
+
 // Cursor
 _APPKIT_PRIVATE_DEF_SEL(currentCursor, "currentCursor");
 

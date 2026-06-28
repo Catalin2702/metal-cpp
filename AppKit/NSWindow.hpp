@@ -36,9 +36,34 @@ class DisplayLink;
 
 namespace NS {
 class Screen;
+class Notification;
+class Window;
 }
 
 namespace NS {
+
+// Receives the AppKit notifications sent to an NSWindow's delegate. Subclass it,
+// override the callbacks you need, and attach an instance with
+// Window::setDelegate(const WindowDelegate*). The window retains the wrapper that
+// holds the pointer but does not own the C++ object, so the delegate must outlive
+// the window.
+class WindowDelegate {
+public:
+	virtual ~WindowDelegate() = default;
+
+	virtual void windowDidResize([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidMove([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidBecomeKey([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidResignKey([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidMiniaturize([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidDeminiaturize([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidEnterFullScreen([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowDidExitFullScreen([[maybe_unused]] Notification* pNotification) {}
+	virtual void windowWillClose([[maybe_unused]] Notification* pNotification) {}
+
+	// Return true to allow the window to close. Defaults to true.
+	virtual bool windowShouldClose([[maybe_unused]] Window* pSender) { return true; }
+};
 
 // NSWindowLevel is a typed NSInteger. Common values: Normal = 0, Floating = 3,
 // ModalPanel = 8, MainMenu = 24, Status = 25, PopUpMenu = 101, ScreenSaver = 1000.
@@ -74,6 +99,7 @@ public:
 public:
 	void setContentView(const View* pContentView) const;
 	void setDelegate(const Object* pDelegate) const;
+	void setDelegate(const WindowDelegate* pDelegate) const;
 	void setFrameAutosaveName(const String* pName) const;
 	void setFrameUsingName(const String* pName) const;
 	void setFrame(const CGRect& frame, bool display = true) const;
@@ -265,4 +291,49 @@ _NS_INLINE NS::String* NS::Window::title() const {
 
 _NS_INLINE CA::DisplayLink* NS::Window::displayLink(const Object* pTarget, SEL selector) const {
 	return sendMessage<CA::DisplayLink*>(this, _APPKIT_PRIVATE_SEL(displayLinkWithTarget_selector_), pTarget, selector);
+}
+
+_NS_INLINE void NS::Window::setDelegate(const WindowDelegate* pDelegate) const {
+	// Wrap the C++ delegate in an NSValue and register Objective-C trampolines on
+	// the NSValue class. Each trampoline reads the delegate back through
+	// pointerValue() and forwards to the matching C++ method.
+	Value* pWrapper = Value::value(pDelegate);
+
+	Class wrapperClass = (Class)objc_lookUpClass("NSValue");
+
+	#define _NS_FWD_WINDOW_NOTE( objcSel, cppMethod )                                            \
+		do {                                                                                     \
+			void (*fn)(Value*, SEL, void*) = [](Value* pSelf, SEL, void* pNotification){         \
+				reinterpret_cast<WindowDelegate*>(pSelf->pointerValue())->cppMethod(             \
+					static_cast<Notification*>(pNotification));                                  \
+			};                                                                                   \
+			class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(objcSel), (IMP)fn, "v@:@");        \
+		} while (0)
+
+	_NS_FWD_WINDOW_NOTE(windowDidResize_,          windowDidResize);
+	_NS_FWD_WINDOW_NOTE(windowDidMove_,            windowDidMove);
+	_NS_FWD_WINDOW_NOTE(windowDidBecomeKey_,       windowDidBecomeKey);
+	_NS_FWD_WINDOW_NOTE(windowDidResignKey_,       windowDidResignKey);
+	_NS_FWD_WINDOW_NOTE(windowDidMiniaturize_,     windowDidMiniaturize);
+	_NS_FWD_WINDOW_NOTE(windowDidDeminiaturize_,   windowDidDeminiaturize);
+	_NS_FWD_WINDOW_NOTE(windowDidEnterFullScreen_, windowDidEnterFullScreen);
+	_NS_FWD_WINDOW_NOTE(windowDidExitFullScreen_,  windowDidExitFullScreen);
+	_NS_FWD_WINDOW_NOTE(windowWillClose_,          windowWillClose);
+
+	#undef _NS_FWD_WINDOW_NOTE
+
+	// windowShouldClose: returns a BOOL and receives the window itself.
+	bool (*shouldClose)(Value*, SEL, Window*) = [](Value* pSelf, SEL, Window* pSender){
+		return reinterpret_cast<WindowDelegate*>(pSelf->pointerValue())->windowShouldClose(pSender);
+	};
+	class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(windowShouldClose_), (IMP)shouldClose, "B@:@");
+
+	// Keep the wrapper alive for as long as the dispatch needs it.
+#ifdef __OBJC__
+	objc_setAssociatedObject((__bridge id)pWrapper, "nswindowdelegate_cpp", (__bridge id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+#else
+	objc_setAssociatedObject((id)pWrapper, "nswindowdelegate_cpp", (id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+#endif
+
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setDelegate_), pWrapper);
 }
