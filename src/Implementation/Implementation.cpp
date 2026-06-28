@@ -18,3 +18,4 @@
 #include "MetalFX/MetalFX.hpp"
 #include "MetalKit/MetalKit.hpp"
 #include "QuartzCore/QuartzCore.hpp"
+#include "AppKit/AppKit.hpp"
