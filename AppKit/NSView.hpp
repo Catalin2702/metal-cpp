@@ -33,6 +33,7 @@
 
 namespace CA {
 	class MetalLayer;
+	class DisplayLink;
 }
 
 namespace NS
@@ -45,6 +46,11 @@ namespace NS
 			void setLayer(CA::MetalLayer* layer) const;
 			void setOpaque(bool opaque) const;
 			void setWantsLayer(bool wantsLayer) const;
+
+			// Creates a display link tied to this view's display. The link invokes
+			// 'selector' on 'pTarget' each vsync; the method must have the signature
+			// (void)selector:(CA::DisplayLink*). Add it to a run loop to start it.
+			[[nodiscard]] CA::DisplayLink* displayLink(const Object* pTarget, SEL selector) const;
 	};
 }
 
@@ -66,4 +72,8 @@ _NS_INLINE void NS::View::setOpaque(const bool opaque) const {
 
 _NS_INLINE void NS::View::setWantsLayer(const bool wantsLayer) const {
 	return Object::sendMessage< void >( this, _APPKIT_PRIVATE_SEL( setWantsLayer_ ), wantsLayer );
+}
+
+_NS_INLINE CA::DisplayLink* NS::View::displayLink(const Object* pTarget, SEL selector) const {
+	return Object::sendMessage< CA::DisplayLink* >( this, _APPKIT_PRIVATE_SEL( displayLinkWithTarget_selector_ ), pTarget, selector );
 }

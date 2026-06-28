@@ -27,11 +27,14 @@
 
 #include "AppKitPrivate.hpp"
 #include "NSApplication.hpp"
+#include "NSColorSpace.hpp"
+#include "NSCursor.hpp"
 #include "NSEvent.hpp"
 #include "NSMenu.hpp"
 #include "NSMenuItem.hpp"
 #include "NSOpenPanel.hpp"
 #include "NSRunningApplication.hpp"
+#include "NSScreen.hpp"
 #include "NSWindow.hpp"
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------

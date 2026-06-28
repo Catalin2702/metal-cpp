@@ -29,18 +29,39 @@
 #include "NSView.hpp"
 
 #include "Foundation/NSObject.hpp"
-#include "Metal/MTLEvent.hpp"
+
+namespace CA {
+class DisplayLink;
+}
 
 namespace NS {
 class Screen;
 }
 
-
 namespace NS {
-class RenderViewController;
-}
 
-namespace NS {
+// NSWindowLevel is a typed NSInteger. Common values: Normal = 0, Floating = 3,
+// ModalPanel = 8, MainMenu = 24, Status = 25, PopUpMenu = 101, ScreenSaver = 1000.
+using WindowLevel = Integer;
+
+_NS_OPTIONS(NS::UInteger, WindowCollectionBehavior) {
+	WindowCollectionBehaviorDefault = 0,
+	WindowCollectionBehaviorCanJoinAllSpaces = (1 << 0),
+	WindowCollectionBehaviorMoveToActiveSpace = (1 << 1),
+	WindowCollectionBehaviorManaged = (1 << 2),
+	WindowCollectionBehaviorTransient = (1 << 3),
+	WindowCollectionBehaviorStationary = (1 << 4),
+	WindowCollectionBehaviorParticipatesInCycle = (1 << 5),
+	WindowCollectionBehaviorIgnoresCycle = (1 << 6),
+	WindowCollectionBehaviorFullScreenPrimary = (1 << 7),
+	WindowCollectionBehaviorFullScreenAuxiliary = (1 << 8),
+	WindowCollectionBehaviorFullScreenNone = (1 << 9),
+	WindowCollectionBehaviorFullScreenAllowsTiling = (1 << 11),
+	WindowCollectionBehaviorFullScreenDisallowsTiling = (1 << 12),
+	WindowCollectionBehaviorPrimary = (1 << 16),
+	WindowCollectionBehaviorAuxiliary = (1 << 17),
+	WindowCollectionBehaviorCanJoinAllApplications = (1 << 18),
+};
 
 class Window : public Referencing<Window> {
 public:
@@ -52,7 +73,6 @@ public:
 
 public:
 	void setContentView(const View* pContentView) const;
-	void setContentViewController(const RenderViewController* pViewController) const;
 	void setDelegate(const Object* pDelegate) const;
 	void setFrameAutosaveName(const String* pName) const;
 	void setFrameUsingName(const String* pName) const;
@@ -63,16 +83,37 @@ public:
 	void setTitle(const String* pTitle) const;
 
 public:
+	void setStyleMask(WindowStyleMask styleMask) const;
+	void setLevel(WindowLevel level) const;
+	void setCollectionBehavior(WindowCollectionBehavior behavior) const;
+	void setAcceptsMouseMovedEvents(bool flag) const;
+	void setContentViewController(const Object* pController) const;
+
+	void center() const;
+	void miniaturize(const Object* pSender) const;
+	void toggleFullScreen(const Object* pSender) const;
+
+public:
 	[[nodiscard]] CGFloat backingScaleFactor() const;
 	[[nodiscard]] CGRect contentRectForFrameRect(const CGRect& frameRect) const;
 	[[nodiscard]] CGRect contentRectForFrameRect() const;
+	[[nodiscard]] CGRect contentLayoutRect() const;
 	[[nodiscard]] View* contentView() const;
-	[[nodiscard]] RenderViewController* contentViewController() const;
+	[[nodiscard]] Object* contentViewController() const;
 	[[nodiscard]] Object* delegate() const;
 	[[nodiscard]] CGRect frame() const;
 	[[nodiscard]] CGSize minSize() const;
+	[[nodiscard]] WindowStyleMask styleMask() const;
+	[[nodiscard]] WindowLevel level() const;
+	[[nodiscard]] WindowCollectionBehavior collectionBehavior() const;
+	[[nodiscard]] bool acceptsMouseMovedEvents() const;
 	[[nodiscard]] Screen* screen() const;
 	[[nodiscard]] String* title() const;
+
+	// Creates a display link tied to this window's display. The link invokes
+	// 'selector' on 'pTarget' each vsync; the method must have the signature
+	// (void)selector:(CA::DisplayLink*). Add it to a run loop to start it.
+	[[nodiscard]] CA::DisplayLink* displayLink(const Object* pTarget, SEL selector) const;
 };
 
 }
@@ -96,10 +137,6 @@ _NS_INLINE void NS::Window::makeKeyAndOrderFront(const Object* pSender) const {
 
 _NS_INLINE void NS::Window::setContentView(const View* pContentView) const {
 	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setContentView_), pContentView);
-}
-
-_NS_INLINE void NS::Window::setContentViewController(const RenderViewController* pViewController) const {
-	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setContentViewController_), pViewController);
 }
 
 _NS_INLINE void NS::Window::setDelegate(const Object* pDelegate) const {
@@ -134,6 +171,38 @@ _NS_INLINE void NS::Window::setTitle(const String* pTitle) const {
 	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setTitle_), pTitle);
 }
 
+_NS_INLINE void NS::Window::setStyleMask(const WindowStyleMask styleMask) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setStyleMask_), styleMask);
+}
+
+_NS_INLINE void NS::Window::setLevel(const WindowLevel level) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setLevel_), level);
+}
+
+_NS_INLINE void NS::Window::setCollectionBehavior(const WindowCollectionBehavior behavior) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setCollectionBehavior_), behavior);
+}
+
+_NS_INLINE void NS::Window::setAcceptsMouseMovedEvents(const bool flag) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setAcceptsMouseMovedEvents_), flag);
+}
+
+_NS_INLINE void NS::Window::setContentViewController(const Object* pController) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(setContentViewController_), pController);
+}
+
+_NS_INLINE void NS::Window::center() const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(center));
+}
+
+_NS_INLINE void NS::Window::miniaturize(const Object* pSender) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(miniaturize_), pSender);
+}
+
+_NS_INLINE void NS::Window::toggleFullScreen(const Object* pSender) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(toggleFullScreen_), pSender);
+}
+
 _NS_INLINE CGFloat NS::Window::backingScaleFactor() const {
 	return sendMessage<CGFloat>(this, _APPKIT_PRIVATE_SEL(backingScaleFactor));
 }
@@ -146,12 +215,16 @@ _NS_INLINE CGRect NS::Window::contentRectForFrameRect() const {
 	return contentRectForFrameRect(frame());
 }
 
+_NS_INLINE CGRect NS::Window::contentLayoutRect() const {
+	return sendMessage<CGRect>(this, _APPKIT_PRIVATE_SEL(contentLayoutRect));
+}
+
 _NS_INLINE NS::View* NS::Window::contentView() const {
 	return sendMessage<View*>(this, _APPKIT_PRIVATE_SEL(contentView));
 }
 
-_NS_INLINE NS::RenderViewController* NS::Window::contentViewController() const {
-	return sendMessage<RenderViewController*>(this, _APPKIT_PRIVATE_SEL(contentViewController));
+_NS_INLINE NS::Object* NS::Window::contentViewController() const {
+	return sendMessage<Object*>(this, _APPKIT_PRIVATE_SEL(contentViewController));
 }
 
 _NS_INLINE NS::Object* NS::Window::delegate() const {
@@ -166,10 +239,30 @@ _NS_INLINE CGSize NS::Window::minSize() const {
 	return sendMessage<CGSize>(this, _APPKIT_PRIVATE_SEL(minSize));
 }
 
+_NS_INLINE NS::WindowStyleMask NS::Window::styleMask() const {
+	return sendMessage<WindowStyleMask>(this, _APPKIT_PRIVATE_SEL(styleMask));
+}
+
+_NS_INLINE NS::WindowLevel NS::Window::level() const {
+	return sendMessage<WindowLevel>(this, _APPKIT_PRIVATE_SEL(level));
+}
+
+_NS_INLINE NS::WindowCollectionBehavior NS::Window::collectionBehavior() const {
+	return sendMessage<WindowCollectionBehavior>(this, _APPKIT_PRIVATE_SEL(collectionBehavior));
+}
+
+_NS_INLINE bool NS::Window::acceptsMouseMovedEvents() const {
+	return sendMessage<bool>(this, _APPKIT_PRIVATE_SEL(acceptsMouseMovedEvents));
+}
+
 _NS_INLINE NS::Screen* NS::Window::screen() const {
 	return sendMessage<Screen*>(this, _APPKIT_PRIVATE_SEL(screen));
 }
 
 _NS_INLINE NS::String* NS::Window::title() const {
 	return sendMessage<String*>(this, _APPKIT_PRIVATE_SEL(title_));
+}
+
+_NS_INLINE CA::DisplayLink* NS::Window::displayLink(const Object* pTarget, SEL selector) const {
+	return sendMessage<CA::DisplayLink*>(this, _APPKIT_PRIVATE_SEL(displayLinkWithTarget_selector_), pTarget, selector);
 }

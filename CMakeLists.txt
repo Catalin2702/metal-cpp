@@ -39,9 +39,12 @@ set(APPKIT_HEADERS
 	AppKit/AppKit.hpp
 	AppKit/AppKitPrivate.hpp
 	AppKit/NSApplication.hpp
+	AppKit/NSColorSpace.hpp
+	AppKit/NSCursor.hpp
 	AppKit/NSEvent.hpp
 	AppKit/NSMenu.hpp
 	AppKit/NSMenuItem.hpp
+	AppKit/NSScreen.hpp
 	AppKit/NSOpenPanel.hpp
 	AppKit/NSRunningApplication.hpp
 	AppKit/NSView.hpp

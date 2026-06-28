@@ -73,8 +73,9 @@ _APPKIT_PRIVATE_DEF_CLS( NSWindow );
 _APPKIT_PRIVATE_DEF_CLS( NSMenu );
 _APPKIT_PRIVATE_DEF_CLS( NSMenuItem );
 _APPKIT_PRIVATE_DEF_CLS( NSEvent );
-_APPKIT_PRIVATE_DEF_CLS( Screen );
-_APPKIT_PRIVATE_DEF_CLS( WindowDelegate );
+_APPKIT_PRIVATE_DEF_CLS( NSScreen );
+_APPKIT_PRIVATE_DEF_CLS( NSColorSpace );
+_APPKIT_PRIVATE_DEF_CLS( NSCursor );
 
 } // Class
 
@@ -175,6 +176,9 @@ _APPKIT_PRIVATE_DEF_SEL( setOpaque_,
 
 _APPKIT_PRIVATE_DEF_SEL( setWantsLayer_,
 						"setWantsLayer:" );
+
+_APPKIT_PRIVATE_DEF_SEL( displayLinkWithTarget_selector_,
+						"displayLinkWithTarget:selector:" );
 
 _APPKIT_PRIVATE_DEF_SEL( setEventHandler_,
 						"setEventHandler:" );
@@ -426,6 +430,8 @@ _APPKIT_PRIVATE_DEF_SEL(convertPoint_fromView_,
 // Screen
 _APPKIT_PRIVATE_DEF_SEL(mainScreen, "mainScreen");
 
+_APPKIT_PRIVATE_DEF_SEL(deepestScreen, "deepestScreen");
+
 _APPKIT_PRIVATE_DEF_SEL(maximumFramesPerSecond, "maximumFramesPerSecond");
 
 _APPKIT_PRIVATE_DEF_SEL(screen, "screen");
@@ -433,6 +439,52 @@ _APPKIT_PRIVATE_DEF_SEL(screen, "screen");
 _APPKIT_PRIVATE_DEF_SEL(screens, "screens");
 
 _APPKIT_PRIVATE_DEF_SEL(visibleFrame, "visibleFrame");
+
+_APPKIT_PRIVATE_DEF_SEL(deviceDescription, "deviceDescription");
+
+_APPKIT_PRIVATE_DEF_SEL(safeAreaInsets, "safeAreaInsets");
+
+_APPKIT_PRIVATE_DEF_SEL(auxiliaryTopLeftArea, "auxiliaryTopLeftArea");
+
+_APPKIT_PRIVATE_DEF_SEL(auxiliaryTopRightArea, "auxiliaryTopRightArea");
+
+_APPKIT_PRIVATE_DEF_SEL(maximumExtendedDynamicRangeColorComponentValue,
+						"maximumExtendedDynamicRangeColorComponentValue");
+
+_APPKIT_PRIVATE_DEF_SEL(maximumPotentialExtendedDynamicRangeColorComponentValue,
+						"maximumPotentialExtendedDynamicRangeColorComponentValue");
+
+_APPKIT_PRIVATE_DEF_SEL(maximumReferenceExtendedDynamicRangeColorComponentValue,
+						"maximumReferenceExtendedDynamicRangeColorComponentValue");
+
+_APPKIT_PRIVATE_DEF_SEL(convertRectToBacking_, "convertRectToBacking:");
+
+_APPKIT_PRIVATE_DEF_SEL(convertRectFromBacking_, "convertRectFromBacking:");
+
+_APPKIT_PRIVATE_DEF_SEL(colorSpace, "colorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(depth, "depth");
+
+_APPKIT_PRIVATE_DEF_SEL(supportedWindowDepths, "supportedWindowDepths");
+
+_APPKIT_PRIVATE_DEF_SEL(backingAlignedRect_options_, "backingAlignedRect:options:");
+
+// ColorSpace
+_APPKIT_PRIVATE_DEF_SEL(sRGBColorSpace, "sRGBColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(extendedSRGBColorSpace, "extendedSRGBColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(displayP3ColorSpace, "displayP3ColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(adobeRGB1998ColorSpace, "adobeRGB1998ColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(genericRGBColorSpace, "genericRGBColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(deviceRGBColorSpace, "deviceRGBColorSpace");
+
+_APPKIT_PRIVATE_DEF_SEL(numberOfColorComponents, "numberOfColorComponents");
+
+_APPKIT_PRIVATE_DEF_SEL(colorSpaceModel, "colorSpaceModel");
 
 // Window
 _APPKIT_PRIVATE_DEF_SEL(minSize, "minSize");
@@ -442,6 +494,47 @@ _APPKIT_PRIVATE_DEF_SEL(setMinSize_, "setMinSize:");
 _APPKIT_PRIVATE_DEF_SEL(setContentViewController_, "setContentViewController:");
 
 _APPKIT_PRIVATE_DEF_SEL(contentViewController, "contentViewController");
+
+_APPKIT_PRIVATE_DEF_SEL(styleMask, "styleMask");
+
+_APPKIT_PRIVATE_DEF_SEL(setStyleMask_, "setStyleMask:");
+
+_APPKIT_PRIVATE_DEF_SEL(level, "level");
+
+_APPKIT_PRIVATE_DEF_SEL(setLevel_, "setLevel:");
+
+_APPKIT_PRIVATE_DEF_SEL(collectionBehavior, "collectionBehavior");
+
+_APPKIT_PRIVATE_DEF_SEL(setCollectionBehavior_, "setCollectionBehavior:");
+
+_APPKIT_PRIVATE_DEF_SEL(acceptsMouseMovedEvents, "acceptsMouseMovedEvents");
+
+_APPKIT_PRIVATE_DEF_SEL(setAcceptsMouseMovedEvents_, "setAcceptsMouseMovedEvents:");
+
+_APPKIT_PRIVATE_DEF_SEL(contentLayoutRect, "contentLayoutRect");
+
+_APPKIT_PRIVATE_DEF_SEL(center, "center");
+
+_APPKIT_PRIVATE_DEF_SEL(miniaturize_, "miniaturize:");
+
+_APPKIT_PRIVATE_DEF_SEL(toggleFullScreen_, "toggleFullScreen:");
+
+// Cursor
+_APPKIT_PRIVATE_DEF_SEL(currentCursor, "currentCursor");
+
+_APPKIT_PRIVATE_DEF_SEL(arrowCursor, "arrowCursor");
+
+_APPKIT_PRIVATE_DEF_SEL(hide, "hide");
+
+_APPKIT_PRIVATE_DEF_SEL(unhide, "unhide");
+
+_APPKIT_PRIVATE_DEF_SEL(setHiddenUntilMouseMoves_, "setHiddenUntilMouseMoves:");
+
+_APPKIT_PRIVATE_DEF_SEL(set, "set");
+
+_APPKIT_PRIVATE_DEF_SEL(push, "push");
+
+_APPKIT_PRIVATE_DEF_SEL(pop, "pop");
 
 }
 
