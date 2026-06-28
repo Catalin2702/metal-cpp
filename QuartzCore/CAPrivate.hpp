@@ -77,6 +77,8 @@ namespace Private
     {
         _CA_PRIVATE_DEF_CLS(CAMetalLayer);
         _CA_PRIVATE_DEF_CLS(CADisplayLink);
+        _CA_PRIVATE_DEF_CLS(CAMetalDisplayLink);
+        _CA_PRIVATE_DEF_CLS(CAMetalDisplayLinkUpdate);
     } // Class
 } // Private
 } // CA
@@ -168,6 +170,20 @@ namespace Private
             "preferredFrameRateRange");
         _CA_PRIVATE_DEF_SEL(setPreferredFrameRateRange_,
             "setPreferredFrameRateRange:");
+        _CA_PRIVATE_DEF_SEL(initWithMetalLayer_,
+            "initWithMetalLayer:");
+        _CA_PRIVATE_DEF_SEL(drawable,
+            "drawable");
+        _CA_PRIVATE_DEF_SEL(targetPresentationTimestamp,
+            "targetPresentationTimestamp");
+        _CA_PRIVATE_DEF_SEL(preferredFrameLatency,
+            "preferredFrameLatency");
+        _CA_PRIVATE_DEF_SEL(setPreferredFrameLatency_,
+            "setPreferredFrameLatency:");
+        _CA_PRIVATE_DEF_SEL(delegate,
+            "delegate");
+        _CA_PRIVATE_DEF_SEL(setDelegate_,
+            "setDelegate:");
     } // Class
 } // Private
 } // CA

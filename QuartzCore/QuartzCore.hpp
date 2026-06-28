@@ -23,6 +23,7 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #include "CADisplayLink.hpp"
+#include "CAMetalDisplayLink.hpp"
 #include "CAMetalDrawable.hpp"
 #include "CAMetalLayer.hpp"
 

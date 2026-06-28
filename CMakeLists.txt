@@ -202,6 +202,7 @@ set(METALKIT_HEADERS
 set(QUARTZCORE_HEADERS
 	QuartzCore/CADefines.hpp
 	QuartzCore/CADisplayLink.hpp
+	QuartzCore/CAMetalDisplayLink.hpp
 	QuartzCore/CAMetalDrawable.hpp
 	QuartzCore/CAMetalLayer.hpp
 	QuartzCore/CAPrivate.hpp
