@@ -1,0 +1,13 @@
+# --- IDE ---
+.vscode/
+.vs/
+*.sln
+*.vcxproj
+*.user
+.idea/
+*.swp
+*.swo
+
+# --- IA Tools ---
+CLAUDE.md
+graphify-out

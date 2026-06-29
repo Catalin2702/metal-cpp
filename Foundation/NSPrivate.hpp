@@ -105,6 +105,7 @@ namespace Private
         _NS_PRIVATE_DEF_CLS(NSNumber);
         _NS_PRIVATE_DEF_CLS(NSObject);
         _NS_PRIVATE_DEF_CLS(NSProcessInfo);
+        _NS_PRIVATE_DEF_CLS(NSRunLoop);
         _NS_PRIVATE_DEF_CLS(NSSet);
         _NS_PRIVATE_DEF_CLS(NSString);
         _NS_PRIVATE_DEF_CLS(NSURL);
@@ -456,6 +457,10 @@ namespace Private
             "resourceURL");
         _NS_PRIVATE_DEF_SEL(respondsToSelector_,
             "respondsToSelector:");
+        _NS_PRIVATE_DEF_SEL(currentRunLoop,
+            "currentRunLoop");
+        _NS_PRIVATE_DEF_SEL(mainRunLoop,
+            "mainRunLoop");
         _NS_PRIVATE_DEF_SEL(retain,
             "retain");
         _NS_PRIVATE_DEF_SEL(retainCount,

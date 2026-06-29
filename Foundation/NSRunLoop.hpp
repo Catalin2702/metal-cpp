@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// QuartzCore/QuartzCore.hpp
+// Foundation/NSRunLoop.hpp
 //
 // Copyright 2020-2024 Apple Inc.
 //
@@ -22,9 +22,44 @@
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#include "CADisplayLink.hpp"
-#include "CAMetalDisplayLink.hpp"
-#include "CAMetalDrawable.hpp"
-#include "CAMetalLayer.hpp"
+#include "NSDefines.hpp"
+#include "NSObject.hpp"
+#include "NSPrivate.hpp"
+#include "NSString.hpp"
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+namespace NS
+{
+
+class RunLoop : public Referencing<RunLoop>
+{
+public:
+    static RunLoop* currentRunLoop();
+    static RunLoop* mainRunLoop();
+
+    // The default run-loop mode (NSDefaultRunLoopMode == "kCFRunLoopDefaultMode"),
+    // suitable for CADisplayLink::addToRunLoop(). Returned autoreleased.
+    static String*  defaultMode();
+};
+
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_NS_INLINE NS::RunLoop* NS::RunLoop::currentRunLoop()
+{
+    return Object::sendMessage<RunLoop*>(_NS_PRIVATE_CLS(NSRunLoop), _NS_PRIVATE_SEL(currentRunLoop));
+}
+
+_NS_INLINE NS::RunLoop* NS::RunLoop::mainRunLoop()
+{
+    return Object::sendMessage<RunLoop*>(_NS_PRIVATE_CLS(NSRunLoop), _NS_PRIVATE_SEL(mainRunLoop));
+}
+
+_NS_INLINE NS::String* NS::RunLoop::defaultMode()
+{
+    return String::string("kCFRunLoopDefaultMode", UTF8StringEncoding);
+}
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
