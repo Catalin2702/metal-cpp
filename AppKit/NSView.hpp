@@ -31,6 +31,7 @@
 #include "Foundation/NSNumber.hpp"
 
 #include <CoreGraphics/CGGeometry.h>
+#include <objc/message.h>
 
 namespace CA {
 	class MetalLayer;
@@ -152,43 +153,66 @@ _NS_INLINE NS::ViewInputDispatcher* NS::View::eventDispatcher() const {
 	return pWrapper ? reinterpret_cast< ViewInputDispatcher* >( pWrapper->pointerValue() ) : nullptr;
 }
 
+namespace NS::Private {
+	// Installs one NSResponder method on pViewClass that forwards the event to
+	// pMethod on the view's dispatcher; when no dispatcher is attached it calls the
+	// superclass implementation, so views of this class that don't use a dispatcher
+	// keep their default AppKit behaviour instead of swallowing the event. A block
+	// IMP is used so the owning class is captured (needed for a correct super call).
+	// Idempotent: a spare IMP is dropped if the class already implements the method.
+	// '::Class' is qualified because NS::Private also contains a 'Class' namespace
+	// (the runtime class-symbol table), which would otherwise shadow the type.
+	_NS_INLINE void installViewResponder(::Class pViewClass, ::Class pSuperClass, const char* pSelectorName,
+										 void (ViewInputDispatcher::* pMethod)(Event*)) {
+		SEL sel = sel_registerName( pSelectorName );
+
+		void (^block)(View*, Event*) = ^(View* pSelf, Event* pEvent) {
+			if ( ViewInputDispatcher* pDispatcher = pSelf->eventDispatcher() ) {
+				(pDispatcher->*pMethod)( pEvent );
+			} else {
+#ifdef __OBJC__
+				struct objc_super super = { (__bridge id)pSelf, pSuperClass };
+#else
+				struct objc_super super = { (id)pSelf, pSuperClass };
+#endif
+				reinterpret_cast< void (*)(struct objc_super*, SEL, Event*) >( objc_msgSendSuper )( &super, sel, pEvent );
+			}
+		};
+
+#ifdef __OBJC__
+		const IMP imp = imp_implementationWithBlock( block );
+#else
+		const IMP imp = imp_implementationWithBlock( reinterpret_cast< id >( block ) );
+#endif
+		if ( !class_addMethod( pViewClass, sel, imp, "v@:@" ) ) {
+			imp_removeBlock( imp );
+		}
+	}
+}
+
 _NS_INLINE void NS::View::registerInputHandlers(const View* pView) {
 #ifdef __OBJC__
 	Class viewClass = object_getClass( (__bridge id)pView );
 #else
 	Class viewClass = object_getClass( (id)pView );
 #endif
+	Class superClass = class_getSuperclass( viewClass );
 
-	// Each trampoline is captureless so it converts to an IMP. 'self' is the view;
-	// it forwards the NSResponder event straight to the attached dispatcher (if
-	// any). class_addMethod is a no-op when the class already implements the
-	// selector, so this is idempotent.
-	#define _NS_FWD_INPUT( objcSelector, dispatchMethod )                                          \
-		do {                                                                                       \
-			void (*fn)( View*, SEL, Event* ) = []( View* self, SEL, Event* pEvent ){               \
-				if ( ViewInputDispatcher* pDispatcher = self->eventDispatcher() ) {                \
-					pDispatcher->dispatchMethod( pEvent );                                         \
-				}                                                                                  \
-			};                                                                                     \
-			class_addMethod( viewClass, sel_registerName( objcSelector ), (IMP)fn, "v@:@" );       \
-		} while ( 0 )
-
-	_NS_FWD_INPUT( "mouseDown:",         DispatchMouseDown );
-	_NS_FWD_INPUT( "mouseUp:",           DispatchMouseUp );
-	_NS_FWD_INPUT( "mouseDragged:",      DispatchMouseDragged );
-	_NS_FWD_INPUT( "rightMouseDown:",    DispatchRightMouseDown );
-	_NS_FWD_INPUT( "rightMouseUp:",      DispatchRightMouseUp );
-	_NS_FWD_INPUT( "rightMouseDragged:", DispatchRightMouseDragged );
-	_NS_FWD_INPUT( "otherMouseDown:",    DispatchOtherMouseDown );
-	_NS_FWD_INPUT( "otherMouseUp:",      DispatchOtherMouseUp );
-	_NS_FWD_INPUT( "otherMouseDragged:", DispatchOtherMouseDragged );
-	_NS_FWD_INPUT( "mouseMoved:",        DispatchMouseMoved );
-	_NS_FWD_INPUT( "mouseEntered:",      DispatchMouseEntered );
-	_NS_FWD_INPUT( "mouseExited:",       DispatchMouseExited );
-	_NS_FWD_INPUT( "keyDown:",           DispatchKeyDown );
-	_NS_FWD_INPUT( "keyUp:",             DispatchKeyUp );
-	_NS_FWD_INPUT( "flagsChanged:",      DispatchFlagsChanged );
-	_NS_FWD_INPUT( "scrollWheel:",       DispatchScrollWheel );
-
-	#undef _NS_FWD_INPUT
+	using D = ViewInputDispatcher;
+	Private::installViewResponder( viewClass, superClass, "mouseDown:",         &D::DispatchMouseDown );
+	Private::installViewResponder( viewClass, superClass, "mouseUp:",           &D::DispatchMouseUp );
+	Private::installViewResponder( viewClass, superClass, "mouseDragged:",      &D::DispatchMouseDragged );
+	Private::installViewResponder( viewClass, superClass, "rightMouseDown:",    &D::DispatchRightMouseDown );
+	Private::installViewResponder( viewClass, superClass, "rightMouseUp:",      &D::DispatchRightMouseUp );
+	Private::installViewResponder( viewClass, superClass, "rightMouseDragged:", &D::DispatchRightMouseDragged );
+	Private::installViewResponder( viewClass, superClass, "otherMouseDown:",    &D::DispatchOtherMouseDown );
+	Private::installViewResponder( viewClass, superClass, "otherMouseUp:",      &D::DispatchOtherMouseUp );
+	Private::installViewResponder( viewClass, superClass, "otherMouseDragged:", &D::DispatchOtherMouseDragged );
+	Private::installViewResponder( viewClass, superClass, "mouseMoved:",        &D::DispatchMouseMoved );
+	Private::installViewResponder( viewClass, superClass, "mouseEntered:",      &D::DispatchMouseEntered );
+	Private::installViewResponder( viewClass, superClass, "mouseExited:",       &D::DispatchMouseExited );
+	Private::installViewResponder( viewClass, superClass, "keyDown:",           &D::DispatchKeyDown );
+	Private::installViewResponder( viewClass, superClass, "keyUp:",             &D::DispatchKeyUp );
+	Private::installViewResponder( viewClass, superClass, "flagsChanged:",      &D::DispatchFlagsChanged );
+	Private::installViewResponder( viewClass, superClass, "scrollWheel:",       &D::DispatchScrollWheel );
 }
