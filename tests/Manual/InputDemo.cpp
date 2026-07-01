@@ -1,8 +1,11 @@
 //
-// Module: metal-cpp tests
-// File: tests/Manual/InputDemo.cpp
-//
-// Manual, interactive demo (NOT a CTest test): opens a real NSWindow with an
+// Module: tests/Manual
+// File: InputDemo.cpp
+// Created by: Catalin Chirosca
+// Created: 2026-06-29
+// Updated by: Catalin Chirosca
+// Updated: 2026-07-02
+// Notes: Manual, interactive demo (NOT a CTest test): opens a real NSWindow with an
 // MTKView, attaches an NS::ViewInputDispatcher and logs the mouse / keyboard /
 // scroll events it receives to stdout. Build and run it by hand:
 //

@@ -4,7 +4,7 @@
 # Created by: Catalin Chirosca
 # Created: 2026-06-26
 # Updated by: Catalin Chirosca
-# Updated: 2026-06-29
+# Updated: 2026-07-02
 #
 
 cmake_minimum_required(VERSION 3.21)
@@ -209,10 +209,6 @@ set(QUARTZCORE_HEADERS
 	QuartzCore/QuartzCore.hpp
 )
 
-set(IMPLEMENTATION_SOURCES
-	src/Implementation/Implementation.cpp
-)
-
 set(HEADERS
 	${APPKIT_HEADERS}
 	${FOUNDATION_HEADERS}
@@ -222,16 +218,20 @@ set(HEADERS
 	${QUARTZCORE_HEADERS}
 )
 
-set(SOURCES
-	${IMPLEMENTATION_SOURCES}
+# metal-cpp is header-only: consumers must provide exactly one translation unit
+# that defines the *_PRIVATE_IMPLEMENTATION macros before including the umbrella
+# headers (see README). The target therefore only carries include directories,
+# the Apple framework link flags, and the headers (attached as an INTERFACE
+# FILE_SET purely so IDEs index them).
+add_library(METAL_CPP INTERFACE)
+
+target_sources(METAL_CPP INTERFACE
+	FILE_SET metal_cpp_headers TYPE HEADERS
+	BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
+	FILES ${HEADERS}
 )
 
-add_library(METAL_CPP
-	${HEADERS}
-	${SOURCES}
-)
-
-target_link_libraries(METAL_CPP
+target_link_libraries(METAL_CPP INTERFACE
 	"-framework Metal"
 	"-framework MetalKit"
 	"-framework AppKit"
@@ -239,7 +239,7 @@ target_link_libraries(METAL_CPP
 	"-framework QuartzCore"
 )
 
-target_include_directories(METAL_CPP PUBLIC
+target_include_directories(METAL_CPP INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 

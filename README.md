@@ -114,6 +114,23 @@ If you want to use the QuartzCore wrapper, add:
 #include "QuartzCore/QuartzCore.hpp"
 ```
 
+The final result with MetalKit and MetalFX should look like this:
+
+```cpp
+#define NS_PRIVATE_IMPLEMENTATION
+#define MTL_PRIVATE_IMPLEMENTATION
+#define MTLFX_PRIVATE_IMPLEMENTATION
+#define MTK_PRIVATE_IMPLEMENTATION
+#define CA_PRIVATE_IMPLEMENTATION
+
+#include "Foundation/Foundation.hpp"
+#include "Metal/Metal.hpp"
+#include "MetalFX/MetalFX.hpp"
+#include "MetalKit/MetalKit.hpp"
+#include "QuartzCore/QuartzCore.hpp"
+#include "AppKit/AppKit.hpp"
+```
+
 ## Generating a Single Header File
 
 Purely optional: You can generate a single header file that contains all **metal-cpp** headers via:

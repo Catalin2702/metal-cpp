@@ -1,10 +1,15 @@
 //
-// Module: Implementation
+// Module: tests
 // File: Implementation.cpp
 // Created by: Catalin Chirosca
-// Created: 2026-06-26
+// Created: 2026-07-02
 // Updated by: Catalin Chirosca
-// Updated: 2026-06-26
+// Updated: 2026-07-02
+// Notes: metal-cpp is header-only. This is the single translation unit that
+// defines the private class/selector symbols for the test executables. It is
+// the tests' equivalent of the implementation TU every consumer must provide
+// (see the README). No other test source may define the *_PRIVATE_IMPLEMENTATION
+// macros, otherwise the symbols would be emitted more than once.
 //
 
 #define NS_PRIVATE_IMPLEMENTATION

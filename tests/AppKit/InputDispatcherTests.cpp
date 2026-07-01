@@ -1,9 +1,12 @@
 //
-// Module: metal-cpp tests
-// File: tests/AppKit/InputDispatcherTests.cpp
-//
-// Verifies that the NS::ViewInputDispatcher base (a real, vtable-backed C++
-// class) forwards through virtual overrides. No Objective-C objects are touched,
+// Module: tests/AppKit
+// File: InputDispatcherTests.cpp
+// Created by: Catalin Chirosca
+// Created: 2026-06-29
+// Updated by: Catalin Chirosca
+// Updated: 2026-07-02
+// Notes: Verifies that the NS::ViewInputDispatcher base (a real, vtable-backed C++ class)
+// forwards through virtual overrides. No Objective-C objects are touched,
 // so these run anywhere.
 //
 

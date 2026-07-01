@@ -1,8 +1,11 @@
 //
-// Module: metal-cpp tests
-// File: tests/AppKit/WindowDelegateTests.cpp
-//
-// Verifies that the NS::WindowDelegate base forwards through virtual overrides
+// Module: tests/AppKit
+// File: WindowDelegateTests.cpp
+// Created by: Catalin Chirosca
+// Created: 2026-06-29
+// Updated by: Catalin Chirosca
+// Updated: 2026-07-02
+// Notes: Verifies that the NS::WindowDelegate base forwards through virtual overrides
 // and that its defaults behave as documented.
 //
 

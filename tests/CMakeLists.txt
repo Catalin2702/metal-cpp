@@ -4,10 +4,8 @@
 # Created by: Catalin Chirosca
 # Created: 2026-06-29
 # Updated by: Catalin Chirosca
-# Updated: 2026-06-29
-#
-
-# Only configured when METALCPP_BUILD_TESTS is ON (see the root CMakeLists.txt),
+# Updated: 2026-07-02
+# Notes: Only configured when METALCPP_BUILD_TESTS is ON (see the root CMakeLists.txt),
 # which defaults to OFF when metal-cpp is consumed as a subdirectory / submodule.
 # GoogleTest is fetched on demand so it is never downloaded for consumers.
 #
@@ -22,6 +20,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_executable(metal_cpp_tests
+	Implementation.cpp
 	Foundation/StringTests.cpp
 	Metal/DeviceTests.cpp
 	AppKit/InputDispatcherTests.cpp
@@ -42,6 +41,7 @@ gtest_discover_tests(metal_cpp_tests)
 # because it opens a real window and runs an AppKit event loop. Build on demand:
 #   cmake --build <build> --target metal_cpp_input_demo
 add_executable(metal_cpp_input_demo EXCLUDE_FROM_ALL
+	Implementation.cpp
 	Manual/InputDemo.cpp
 )
 

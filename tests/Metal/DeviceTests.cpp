@@ -1,8 +1,11 @@
 //
-// Module: metal-cpp tests
-// File: tests/Metal/DeviceTests.cpp
-//
-// Runtime check for Metal device creation. Skipped gracefully on machines
+// Module: tests/Metal
+// File: DeviceTests.cpp
+// Created by: Catalin Chirosca
+// Created: 2026-06-29
+// Updated by: Catalin Chirosca
+// Updated: 2026-07-02
+// Notes: Runtime check for Metal device creation. Skipped gracefully on machines
 // without a Metal device (e.g. headless CI).
 //
 

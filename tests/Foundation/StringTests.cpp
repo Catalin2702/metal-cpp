@@ -1,8 +1,11 @@
 //
-// Module: metal-cpp tests
-// File: tests/Foundation/StringTests.cpp
-//
-// Runtime checks for the Foundation string wrappers. Links against METAL_CPP,
+// Module: tests/Foundation
+// File: StringTests.cpp
+// Created by: Catalin Chirosca
+// Created: 2026-06-29
+// Updated by: Catalin Chirosca
+// Updated: 2026-07-02
+// Notes: Runtime checks for the Foundation string wrappers. Links against METAL_CPP,
 // which provides the Objective-C bridging implementation; this TU only includes
 // the public headers (it must NOT define the *_PRIVATE_IMPLEMENTATION macros).
 //
