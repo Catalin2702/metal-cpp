@@ -37,10 +37,10 @@
 
 namespace MTK
 {
-	class ViewDelegate
+	class I_ViewDelegate
 	{
 		public:
-			virtual						~ViewDelegate() { }
+			virtual						~I_ViewDelegate() { }
 			virtual void				drawInMTKView([[maybe_unused]] class View* pView ) { }
 			virtual void				drawableSizeWillChange( [[maybe_unused]] class View* pView, [[maybe_unused]] CGSize size ) { }
 	};
@@ -55,8 +55,8 @@ namespace MTK
 			void						setDevice( const MTL::Device* pDevice );
 			MTL::Device*				device() const;
 
-			void						setDelegate( const MTK::ViewDelegate* pDelegate );
-			ViewDelegate*				delegate() const;
+			void						setDelegate( const MTK::I_ViewDelegate* pDelegate );
+			I_ViewDelegate*				delegate() const;
 
 			CA::MetalDrawable*			currentDrawable() const;
 
@@ -158,7 +158,7 @@ namespace MTK::Private {
 	}
 }
 
-_NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
+_NS_INLINE void MTK::View::setDelegate( const MTK::I_ViewDelegate* pDelegate )
 {
 	// Requires a similar soution
 	NS::Value* pWrapper = NS::Value::value( pDelegate );
@@ -166,7 +166,7 @@ _NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
 	// drawInMTKView:
 
 	void (*drawDispatch)( NS::Value*, SEL, id ) = []( NS::Value* pSelf, [[maybe_unused]] SEL _cmd, id pMTKView ){
-		auto pDel = reinterpret_cast< MTK::ViewDelegate* >( pSelf->pointerValue() );
+		auto pDel = reinterpret_cast< MTK::I_ViewDelegate* >( pSelf->pointerValue() );
 #ifdef __OBJC__
         pDel->drawInMTKView( (__bridge MTK::View *)pMTKView );
 
@@ -180,7 +180,7 @@ _NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
 	// mtkView:drawableSizeWillChange:
 
 	void (*drawableSizeWillChange)( NS::Value*, SEL, View*, CGSize ) = []( NS::Value* pSelf, SEL, View* pMTKView, CGSize size){
-		auto pDel = reinterpret_cast< MTK::ViewDelegate* >( pSelf->pointerValue() );
+		auto pDel = reinterpret_cast< MTK::I_ViewDelegate* >( pSelf->pointerValue() );
 		pDel->drawableSizeWillChange( pMTKView, size );
 	};
 
@@ -203,12 +203,12 @@ _NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
 	NS::Object::sendMessage< void >( this, sel_registerName( "setDelegate:" ), pWrapper );
 }
 
-_NS_INLINE MTK::ViewDelegate* MTK::View::delegate() const
+_NS_INLINE MTK::I_ViewDelegate* MTK::View::delegate() const
 {
 	NS::Value* pWrapper = NS::Object::sendMessage< NS::Value* >( this, _MTK_PRIVATE_SEL( delegate ) );
 	if ( pWrapper )
 	{
-		return reinterpret_cast< ViewDelegate* >( pWrapper->pointerValue() );
+		return reinterpret_cast< I_ViewDelegate* >( pWrapper->pointerValue() );
 	}
 	return nullptr;
 }

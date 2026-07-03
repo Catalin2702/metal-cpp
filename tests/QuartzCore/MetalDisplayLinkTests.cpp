@@ -3,8 +3,8 @@
 // Created by: Catalin Chirosca
 // Created: 2026-06-29
 // Updated by: Catalin Chirosca
-// Updated: 2026-07-02
-// Notes: Verifies that the CA::MetalDisplayLinkDelegate base forwards through its virtual override.
+// Updated: 2026-07-03
+// Notes: Verifies that the CA::I_MetalDisplayLinkDelegate base forwards through its virtual override.
 //
 
 #include "QuartzCore/QuartzCore.hpp"
@@ -13,7 +13,7 @@
 
 namespace
 {
-	struct RecordingDelegate : CA::MetalDisplayLinkDelegate
+	struct RecordingDelegate : CA::I_MetalDisplayLinkDelegate
 	{
 		int updates = 0;
 
@@ -24,7 +24,7 @@ namespace
 TEST(QuartzCoreMetalDisplayLink, DelegateOverrideIsInvoked)
 {
 	RecordingDelegate delegate;
-	CA::MetalDisplayLinkDelegate& base = delegate;
+	CA::I_MetalDisplayLinkDelegate& base = delegate;
 
 	base.metalDisplayLinkNeedsUpdate(nullptr, nullptr);
 

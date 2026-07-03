@@ -60,8 +60,6 @@ public:
 	virtual void windowDidEnterFullScreen([[maybe_unused]] Notification* pNotification) {}
 	virtual void windowDidExitFullScreen([[maybe_unused]] Notification* pNotification) {}
 	virtual void windowWillClose([[maybe_unused]] Notification* pNotification) {}
-
-	// Return true to allow the window to close. Defaults to true.
 	virtual bool windowShouldClose([[maybe_unused]] Window* pSender) { return true; }
 };
 

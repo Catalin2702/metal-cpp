@@ -61,10 +61,10 @@ public:
 // metalDisplayLinkNeedsUpdate() and attach it with MetalDisplayLink::setDelegate().
 // The link retains the wrapper that holds the pointer but does not own the C++
 // object, so the delegate must outlive the link.
-class MetalDisplayLinkDelegate
+class I_MetalDisplayLinkDelegate
 {
 public:
-    virtual ~MetalDisplayLinkDelegate() = default;
+    virtual ~I_MetalDisplayLinkDelegate() = default;
 
     virtual void metalDisplayLinkNeedsUpdate([[maybe_unused]] MetalDisplayLink* pLink, MetalDisplayLinkUpdate* pUpdate) = 0;
 };
@@ -77,8 +77,8 @@ public:
     static MetalDisplayLink* alloc();
     MetalDisplayLink* init(const MetalLayer* pLayer);
 
-    void setDelegate(const MetalDisplayLinkDelegate* pDelegate) const;
-    MetalDisplayLinkDelegate* delegate() const;
+    void setDelegate(const I_MetalDisplayLinkDelegate* pDelegate) const;
+    I_MetalDisplayLinkDelegate* delegate() const;
 
     void addToRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
     void removeFromRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
@@ -134,7 +134,7 @@ namespace CA::Private {
     }
 }
 
-_CA_INLINE void CA::MetalDisplayLink::setDelegate(const MetalDisplayLinkDelegate* pDelegate) const
+_CA_INLINE void CA::MetalDisplayLink::setDelegate(const I_MetalDisplayLinkDelegate* pDelegate) const
 {
     // Wrap the C++ delegate in an NSValue and register an Objective-C trampoline
     // on the NSValue class. It reads the delegate back through pointerValue() and
@@ -143,7 +143,7 @@ _CA_INLINE void CA::MetalDisplayLink::setDelegate(const MetalDisplayLinkDelegate
 
     void (*needsUpdate)(NS::Value*, SEL, CA::MetalDisplayLink*, CA::MetalDisplayLinkUpdate*) =
         [](NS::Value* pSelf, SEL, CA::MetalDisplayLink* pLink, CA::MetalDisplayLinkUpdate* pUpdate) {
-            reinterpret_cast<MetalDisplayLinkDelegate*>(pSelf->pointerValue())->metalDisplayLinkNeedsUpdate(pLink, pUpdate);
+            reinterpret_cast<I_MetalDisplayLinkDelegate*>(pSelf->pointerValue())->metalDisplayLinkNeedsUpdate(pLink, pUpdate);
         };
 
     class_addMethod((Class)objc_lookUpClass("NSValue"), sel_registerName("metalDisplayLink:needsUpdate:"), (IMP)needsUpdate, "v@:@@");
@@ -158,10 +158,10 @@ _CA_INLINE void CA::MetalDisplayLink::setDelegate(const MetalDisplayLinkDelegate
     Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setDelegate_), pWrapper);
 }
 
-_CA_INLINE CA::MetalDisplayLinkDelegate* CA::MetalDisplayLink::delegate() const
+_CA_INLINE CA::I_MetalDisplayLinkDelegate* CA::MetalDisplayLink::delegate() const
 {
     NS::Value* pWrapper = Object::sendMessage<NS::Value*>(this, _CA_PRIVATE_SEL(delegate));
-    return pWrapper ? reinterpret_cast<MetalDisplayLinkDelegate*>(pWrapper->pointerValue()) : nullptr;
+    return pWrapper ? reinterpret_cast<I_MetalDisplayLinkDelegate*>(pWrapper->pointerValue()) : nullptr;
 }
 
 _CA_INLINE void CA::MetalDisplayLink::addToRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const
