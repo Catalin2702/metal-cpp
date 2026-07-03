@@ -67,6 +67,20 @@ namespace NS
 			virtual void DispatchKeyUp( [[maybe_unused]] Event* pEvent ) { }
 			virtual void DispatchFlagsChanged( [[maybe_unused]] Event* pEvent ) { }
 			virtual void DispatchScrollWheel( [[maybe_unused]] Event* pEvent ) { }
+
+			// --- Lifecycle notifications ----------------------------------------
+			// These are the NS::View analogues of the NSViewController lifecycle
+			// (viewDidLoad / viewDidLayout / ...). Unlike the input handlers above
+			// they are notifications, not consumable events: the view's normal
+			// AppKit behaviour always runs first and the dispatcher is informed
+			// afterwards. DispatchViewDidMoveToWindow is the closest match to a
+			// controller's viewDidLoad/viewDidAppear (the view now has a window;
+			// it also fires with a nil window when the view is removed), and
+			// DispatchViewDidLayout maps to viewDidLayout.
+			virtual void DispatchViewDidMoveToWindow() { }
+			virtual void DispatchViewDidMoveToSuperview() { }
+			virtual void DispatchViewDidLayout() { }
+			virtual void DispatchViewDidEndLiveResize() { }
 	};
 
 	class View : public NS::Referencing< View >
@@ -193,6 +207,41 @@ _NS_INLINE void installViewResponder(::Class pViewClass, ::Class pSuperClass, co
 		imp_removeBlock( imp );
 	}
 }
+
+	// Installs one lifecycle notification (no arguments, e.g. viewDidMoveToWindow /
+	// layout / viewDidEndLiveResize) on pViewClass. Unlike installViewResponder these
+	// selectors are notifications rather than consumable events, so the superclass
+	// implementation ALWAYS runs -- NSView provides the real behaviour, some of it
+	// required (e.g. -layout) -- and the dispatcher is informed afterwards only when
+	// one is attached. Like the responders it is idempotent: class_addMethod fails
+	// once the class owns the selector, so the spare block IMP is dropped. This also
+	// means it takes effect on a custom NSView subclass (where the super is NSView and
+	// answers these selectors), not on a plain NSView, exactly like the input handlers.
+_NS_INLINE void installViewLifecycleHandler(::Class pViewClass, ::Class pSuperClass, const char* pSelectorName, void (I_ViewEventDispatcher::* pMethod)()) {
+	SEL sel = sel_registerName( pSelectorName );
+
+	void (^block)(View*) = ^(View* pSelf) {
+#ifdef __OBJC__
+		struct objc_super super = { (__bridge id)pSelf, pSuperClass };
+#else
+		struct objc_super super = { (id)pSelf, pSuperClass };
+#endif
+		reinterpret_cast< void (*)(struct objc_super*, SEL) >( objc_msgSendSuper )( &super, sel );
+
+		if ( I_ViewEventDispatcher* pDispatcher = pSelf->eventDispatcher() ) {
+			(pDispatcher->*pMethod)();
+		}
+	};
+
+#ifdef __OBJC__
+	const IMP imp = imp_implementationWithBlock( block );
+#else
+	const IMP imp = imp_implementationWithBlock( reinterpret_cast< id >( block ) );
+#endif
+	if ( !class_addMethod( pViewClass, sel, imp, "v@:" ) ) {
+		imp_removeBlock( imp );
+	}
+}
 }
 
 _NS_INLINE void NS::View::registerInputHandlers(const View* pView) {
@@ -220,4 +269,11 @@ _NS_INLINE void NS::View::registerInputHandlers(const View* pView) {
 	Private::installViewResponder( viewClass, superClass, "keyUp:",             &D::DispatchKeyUp );
 	Private::installViewResponder( viewClass, superClass, "flagsChanged:",      &D::DispatchFlagsChanged );
 	Private::installViewResponder( viewClass, superClass, "scrollWheel:",       &D::DispatchScrollWheel );
+
+	// Lifecycle notifications (see installViewLifecycleHandler): no NS::Event, super
+	// always runs first, dispatcher informed afterwards.
+	Private::installViewLifecycleHandler( viewClass, superClass, "viewDidMoveToWindow",    &D::DispatchViewDidMoveToWindow );
+	Private::installViewLifecycleHandler( viewClass, superClass, "viewDidMoveToSuperview", &D::DispatchViewDidMoveToSuperview );
+	Private::installViewLifecycleHandler( viewClass, superClass, "layout",                 &D::DispatchViewDidLayout );
+	Private::installViewLifecycleHandler( viewClass, superClass, "viewDidEndLiveResize",   &D::DispatchViewDidEndLiveResize );
 }
