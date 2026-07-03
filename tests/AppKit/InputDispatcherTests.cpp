@@ -16,7 +16,7 @@
 
 namespace
 {
-	struct CountingDispatcher : NS::ViewInputDispatcher
+	struct CountingDispatcher : NS::I_ViewInputDispatcher
 	{
 		int mouseDowns = 0;
 		int scrolls = 0;
@@ -29,7 +29,7 @@ namespace
 TEST(AppKitViewInputDispatcher, VirtualOverridesAreInvoked)
 {
 	CountingDispatcher dispatcher;
-	NS::ViewInputDispatcher& base = dispatcher;
+	NS::I_ViewInputDispatcher& base = dispatcher;
 
 	base.DispatchMouseDown(nullptr);
 	base.DispatchMouseDown(nullptr);
@@ -41,7 +41,7 @@ TEST(AppKitViewInputDispatcher, VirtualOverridesAreInvoked)
 
 TEST(AppKitViewInputDispatcher, DefaultHandlersAreNoops)
 {
-	NS::ViewInputDispatcher base;
+	NS::I_ViewInputDispatcher base;
 
 	EXPECT_NO_THROW(base.DispatchMouseDown(nullptr));
 	EXPECT_NO_THROW(base.DispatchKeyDown(nullptr));

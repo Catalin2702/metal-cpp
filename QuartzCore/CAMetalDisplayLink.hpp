@@ -66,8 +66,7 @@ class MetalDisplayLinkDelegate
 public:
     virtual ~MetalDisplayLinkDelegate() = default;
 
-    virtual void metalDisplayLinkNeedsUpdate([[maybe_unused]] MetalDisplayLink* pLink,
-                                             [[maybe_unused]] MetalDisplayLinkUpdate* pUpdate) {}
+    virtual void metalDisplayLinkNeedsUpdate([[maybe_unused]] MetalDisplayLink* pLink, MetalDisplayLinkUpdate* pUpdate) = 0;
 };
 
 // A display link that vends Metal drawables in step with the display refresh.
@@ -76,23 +75,23 @@ class MetalDisplayLink : public NS::Referencing<MetalDisplayLink>
 {
 public:
     static MetalDisplayLink* alloc();
-    MetalDisplayLink*        init(const MetalLayer* pLayer);
+    MetalDisplayLink* init(const MetalLayer* pLayer);
 
-    void                     setDelegate(const MetalDisplayLinkDelegate* pDelegate) const;
+    void setDelegate(const MetalDisplayLinkDelegate* pDelegate) const;
     MetalDisplayLinkDelegate* delegate() const;
 
-    void                     addToRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
-    void                     removeFromRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
-    void                     invalidate() const;
+    void addToRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
+    void removeFromRunLoop(const NS::RunLoop* pRunLoop, const NS::String* pMode) const;
+    void invalidate() const;
 
-    bool                     isPaused() const;
-    void                     setPaused(bool paused) const;
+    bool isPaused() const;
+    void setPaused(bool paused) const;
 
-    NS::Integer              preferredFrameLatency() const;
-    void                     setPreferredFrameLatency(NS::Integer latency) const;
+    NS::Integer preferredFrameLatency() const;
+    void setPreferredFrameLatency(NS::Integer latency) const;
 
-    FrameRateRange           preferredFrameRateRange() const;
-    void                     setPreferredFrameRateRange(FrameRateRange range) const;
+    FrameRateRange preferredFrameRateRange() const;
+    void setPreferredFrameRateRange(FrameRateRange range) const;
 };
 
 } // namespace CA
@@ -126,6 +125,15 @@ _CA_INLINE CA::MetalDisplayLink* CA::MetalDisplayLink::init(const MetalLayer* pL
     return Object::sendMessage<MetalDisplayLink*>(this, _CA_PRIVATE_SEL(initWithMetalLayer_), pLayer);
 }
 
+// Process-wide, stable key for the associated wrapper. sel_registerName interns
+// the name to a unique pointer across translation units, so it is safe as an
+// associated-object key even across TUs (unlike a bare string literal).
+namespace CA::Private {
+    _CA_INLINE const void* metalDisplayLinkDelegateKey() {
+        return reinterpret_cast< const void* >( sel_registerName( "metalcpp_CAMetalDisplayLink_delegate" ) );
+    }
+}
+
 _CA_INLINE void CA::MetalDisplayLink::setDelegate(const MetalDisplayLinkDelegate* pDelegate) const
 {
     // Wrap the C++ delegate in an NSValue and register an Objective-C trampoline
@@ -142,9 +150,9 @@ _CA_INLINE void CA::MetalDisplayLink::setDelegate(const MetalDisplayLinkDelegate
 
     // Keep the wrapper alive for as long as the dispatch needs it.
 #ifdef __OBJC__
-    objc_setAssociatedObject((__bridge id)pWrapper, "cametaldisplaylinkdelegate_cpp", (__bridge id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject((__bridge id)pWrapper, Private::metalDisplayLinkDelegateKey(), (__bridge id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #else
-    objc_setAssociatedObject((id)pWrapper, "cametaldisplaylinkdelegate_cpp", (id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject((id)pWrapper, Private::metalDisplayLinkDelegateKey(), (id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 #endif
 
     Object::sendMessage<void>(this, _CA_PRIVATE_SEL(setDelegate_), pWrapper);

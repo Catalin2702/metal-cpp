@@ -65,9 +65,9 @@ class Event;
 class Menu;
 class String;
 
-class ApplicationDelegate {
+class I_ApplicationDelegate {
 public:
-	virtual ~ApplicationDelegate() = default;
+	virtual ~I_ApplicationDelegate() = default;
 
 	virtual void applicationWillFinishLaunching([[maybe_unused]] Notification* pNotification) {}
 
@@ -80,7 +80,7 @@ class Application: public Referencing<Application> {
 public:
 	static Application* sharedApplication();
 
-	void setDelegate(const ApplicationDelegate* pDelegate);
+	void setDelegate(const I_ApplicationDelegate* pDelegate);
 
 	[[nodiscard]] bool setActivationPolicy(ActivationPolicy activationPolicy) const;
 
@@ -111,24 +111,24 @@ _NS_INLINE NS::Application* NS::Application::sharedApplication() {
 	return sendMessage<Application*>(_APPKIT_PRIVATE_CLS(NSApplication), _APPKIT_PRIVATE_SEL(sharedApplication));
 }
 
-_NS_INLINE void NS::Application::setDelegate(const ApplicationDelegate* pAppDelegate) {
+_NS_INLINE void NS::Application::setDelegate(const I_ApplicationDelegate* pAppDelegate) {
 	// NOTE: this pWrapper is only held with a weak reference
 	Value* pWrapper = Value::value(pAppDelegate);
 
 	typedef void (*DispatchFunction)(Value*, SEL, void*);
 
 	DispatchFunction willFinishLaunching = [](Value* pSelf, SEL, void* pNotification) {
-		const auto pDel = reinterpret_cast<ApplicationDelegate*>(pSelf->pointerValue());
+		const auto pDel = reinterpret_cast<I_ApplicationDelegate*>(pSelf->pointerValue());
 		pDel->applicationWillFinishLaunching(static_cast<Notification*>(pNotification));
 	};
 
 	DispatchFunction didFinishLaunching = [](Value* pSelf, SEL, void* pNotification) {
-		const auto pDel = reinterpret_cast<ApplicationDelegate*>(pSelf->pointerValue());
+		const auto pDel = reinterpret_cast<I_ApplicationDelegate*>(pSelf->pointerValue());
 		pDel->applicationDidFinishLaunching(static_cast<Notification*>(pNotification));
 	};
 
 	DispatchFunction shouldTerminateAfterLastWindowClosed = [](Value* pSelf, SEL, void* pApplication) {
-		const auto pDel = reinterpret_cast<ApplicationDelegate*>(pSelf->pointerValue());
+		const auto pDel = reinterpret_cast<I_ApplicationDelegate*>(pSelf->pointerValue());
 		pDel->applicationShouldTerminateAfterLastWindowClosed(static_cast<Application*>(pApplication));
 	};
 

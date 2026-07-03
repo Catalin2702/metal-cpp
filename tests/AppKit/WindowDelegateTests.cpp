@@ -15,7 +15,7 @@
 
 namespace
 {
-	struct RecordingWindowDelegate : NS::WindowDelegate
+	struct RecordingWindowDelegate : NS::I_WindowDelegate
 	{
 		bool resized = false;
 
@@ -27,7 +27,7 @@ namespace
 TEST(AppKitWindowDelegate, VirtualOverridesAreInvoked)
 {
 	RecordingWindowDelegate delegate;
-	NS::WindowDelegate& base = delegate;
+	NS::I_WindowDelegate& base = delegate;
 
 	base.windowDidResize(nullptr);
 
@@ -37,7 +37,7 @@ TEST(AppKitWindowDelegate, VirtualOverridesAreInvoked)
 
 TEST(AppKitWindowDelegate, DefaultShouldCloseIsTrue)
 {
-	NS::WindowDelegate base;
+	NS::I_WindowDelegate base;
 
 	EXPECT_TRUE(base.windowShouldClose(nullptr));
 	EXPECT_NO_THROW(base.windowWillClose(nullptr));

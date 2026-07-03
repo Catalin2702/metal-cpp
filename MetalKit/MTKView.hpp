@@ -149,6 +149,15 @@ _NS_INLINE MTL::Device* MTK::View::device() const
 	return NS::Object::sendMessage< MTL::Device* >( this, _MTK_PRIVATE_SEL( device ) );
 }
 
+// Process-wide, stable key for the associated wrapper. sel_registerName interns
+// the name to a unique pointer across translation units, so it is safe as an
+// associated-object key even across TUs (unlike a bare string literal).
+namespace MTK::Private {
+	_NS_INLINE const void* viewDelegateKey() {
+		return reinterpret_cast< const void* >( sel_registerName( "metalcpp_MTKView_delegate" ) );
+	}
+}
+
 _NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
 {
 	// Requires a similar soution
@@ -186,9 +195,9 @@ _NS_INLINE void MTK::View::setDelegate( const MTK::ViewDelegate* pDelegate )
 	// This circular reference leaks the wrapper object to keep it around for the dispatch to work.
 	// It may be better to hoist it to the MTK::View as a member.
 #ifdef __OBJC__
-	objc_setAssociatedObject( (__bridge id)pWrapper, "mtkviewdelegate_cpp", (__bridge id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
+	objc_setAssociatedObject( (__bridge id)pWrapper, Private::viewDelegateKey(), (__bridge id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
 #else
-    objc_setAssociatedObject( (id)pWrapper, "mtkviewdelegate_cpp", (id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
+    objc_setAssociatedObject( (id)pWrapper, Private::viewDelegateKey(), (id)pWrapper, OBJC_ASSOCIATION_RETAIN_NONATOMIC );
 #endif
 
 	NS::Object::sendMessage< void >( this, sel_registerName( "setDelegate:" ), pWrapper );

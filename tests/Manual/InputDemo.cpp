@@ -25,7 +25,7 @@
 namespace
 {
 	// Logs every event forwarded by NS::View to its dispatcher.
-	class InputLogger : public NS::ViewInputDispatcher
+	class InputLogger : public NS::I_ViewInputDispatcher
 	{
 		public:
 			void DispatchMouseDown(NS::Event* pEvent) override { logMouse("mouseDown", pEvent); }
@@ -60,7 +60,7 @@ namespace
 	};
 
 	// Builds the window once the app finished launching and owns the objects.
-	class DemoAppDelegate : public NS::ApplicationDelegate
+	class DemoAppDelegate : public NS::I_ApplicationDelegate
 	{
 		public:
 			~DemoAppDelegate() override
