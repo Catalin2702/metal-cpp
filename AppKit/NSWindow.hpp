@@ -51,16 +51,16 @@ class I_WindowEventDispatcher {
 public:
 	virtual ~I_WindowEventDispatcher() = default;
 
-	virtual void windowDidResize([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidMove([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidBecomeKey([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidResignKey([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidMiniaturize([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidDeminiaturize([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidEnterFullScreen([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowDidExitFullScreen([[maybe_unused]] Notification* pNotification) {}
-	virtual void windowWillClose([[maybe_unused]] Notification* pNotification) {}
-	virtual bool windowShouldClose([[maybe_unused]] Window* pSender) { return true; }
+	virtual void DispatchWindowDidResize([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidMove([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidBecomeKey([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidResignKey([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidMiniaturize([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidDeminiaturize([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidEnterFullScreen([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowDidExitFullScreen([[maybe_unused]] Notification* pNotification) {}
+	virtual void DispatchWindowWillClose([[maybe_unused]] Notification* pNotification) {}
+	virtual bool WindowShouldClose([[maybe_unused]] Window* pSender) { return true; }
 };
 
 // NSWindowLevel is a typed NSInteger. Common values: Normal = 0, Floating = 3,
@@ -326,21 +326,21 @@ _NS_INLINE void NS::Window::setDelegate(const I_WindowEventDispatcher* pDelegate
 			class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(objcSel), (IMP)fn, "v@:@");        \
 		} while (0)
 
-	_NS_FWD_WINDOW_NOTE(windowDidResize_,          windowDidResize);
-	_NS_FWD_WINDOW_NOTE(windowDidMove_,            windowDidMove);
-	_NS_FWD_WINDOW_NOTE(windowDidBecomeKey_,       windowDidBecomeKey);
-	_NS_FWD_WINDOW_NOTE(windowDidResignKey_,       windowDidResignKey);
-	_NS_FWD_WINDOW_NOTE(windowDidMiniaturize_,     windowDidMiniaturize);
-	_NS_FWD_WINDOW_NOTE(windowDidDeminiaturize_,   windowDidDeminiaturize);
-	_NS_FWD_WINDOW_NOTE(windowDidEnterFullScreen_, windowDidEnterFullScreen);
-	_NS_FWD_WINDOW_NOTE(windowDidExitFullScreen_,  windowDidExitFullScreen);
-	_NS_FWD_WINDOW_NOTE(windowWillClose_,          windowWillClose);
+	_NS_FWD_WINDOW_NOTE(windowDidResize_,          DispatchWindowDidResize);
+	_NS_FWD_WINDOW_NOTE(windowDidMove_,            DispatchWindowDidMove);
+	_NS_FWD_WINDOW_NOTE(windowDidBecomeKey_,       DispatchWindowDidBecomeKey);
+	_NS_FWD_WINDOW_NOTE(windowDidResignKey_,       DispatchWindowDidResignKey);
+	_NS_FWD_WINDOW_NOTE(windowDidMiniaturize_,     DispatchWindowDidMiniaturize);
+	_NS_FWD_WINDOW_NOTE(windowDidDeminiaturize_,   DispatchWindowDidDeminiaturize);
+	_NS_FWD_WINDOW_NOTE(windowDidEnterFullScreen_, DispatchWindowDidEnterFullScreen);
+	_NS_FWD_WINDOW_NOTE(windowDidExitFullScreen_,  DispatchWindowDidExitFullScreen);
+	_NS_FWD_WINDOW_NOTE(windowWillClose_,          DispatchWindowWillClose);
 
 	#undef _NS_FWD_WINDOW_NOTE
 
-	// windowShouldClose: returns a BOOL and receives the window itself.
+	// WindowShouldClose: returns a BOOL and receives the window itself.
 	bool (*shouldClose)(Value*, SEL, Window*) = [](Value* pSelf, SEL, Window* pSender){
-		return static_cast<I_WindowEventDispatcher*>(pSelf->pointerValue())->windowShouldClose(pSender);
+		return static_cast<I_WindowEventDispatcher*>(pSelf->pointerValue())->WindowShouldClose(pSender);
 	};
 	class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(windowShouldClose_), (IMP)shouldClose, "B@:@");
 

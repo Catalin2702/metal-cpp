@@ -19,8 +19,8 @@ namespace
 	{
 		bool resized = false;
 
-		void windowDidResize(NS::Notification*) override { resized = true; }
-		bool windowShouldClose(NS::Window*) override { return false; }
+		void DispatchWindowDidResize(NS::Notification*) override { resized = true; }
+		bool WindowShouldClose(NS::Window*) override { return false; }
 	};
 }
 
@@ -29,16 +29,16 @@ TEST(AppKitWindowDelegate, VirtualOverridesAreInvoked)
 	RecordingWindowDelegate delegate;
 	NS::I_WindowEventDispatcher& base = delegate;
 
-	base.windowDidResize(nullptr);
+	base.DispatchWindowDidResize(nullptr);
 
 	EXPECT_TRUE(delegate.resized);
-	EXPECT_FALSE(base.windowShouldClose(nullptr));
+	EXPECT_FALSE(base.WindowShouldClose(nullptr));
 }
 
 TEST(AppKitWindowDelegate, DefaultShouldCloseIsTrue)
 {
 	NS::I_WindowEventDispatcher base;
 
-	EXPECT_TRUE(base.windowShouldClose(nullptr));
-	EXPECT_NO_THROW(base.windowWillClose(nullptr));
+	EXPECT_TRUE(base.WindowShouldClose(nullptr));
+	EXPECT_NO_THROW(base.DispatchWindowWillClose(nullptr));
 }
