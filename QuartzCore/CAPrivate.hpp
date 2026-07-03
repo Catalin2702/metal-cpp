@@ -184,6 +184,10 @@ namespace Private
             "delegate");
         _CA_PRIVATE_DEF_SEL(setDelegate_,
             "setDelegate:");
+
+		// CA::MetalLayer
+		_CA_PRIVATE_DEF_SEL(contentsScale,
+			"contentsScale");
     } // Class
 } // Private
 } // CA

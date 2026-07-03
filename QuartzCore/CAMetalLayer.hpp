@@ -73,6 +73,8 @@ public:
     void                     setWantsExtendedDynamicRangeContent(bool wantsExtendedDynamicRangeContent);
 
     MTL::ResidencySet*       residencySet() const;
+
+	CGFloat contentsScale() const;
 };
 } // namespace CA
 
@@ -231,4 +233,8 @@ _CA_INLINE void CA::MetalLayer::setWantsExtendedDynamicRangeContent(bool wantsEx
 _CA_INLINE MTL::ResidencySet* CA::MetalLayer::residencySet() const
 {
     return Object::sendMessage<MTL::ResidencySet*>(this, _CA_PRIVATE_SEL(residencySet) );
+}
+
+_CA_INLINE CGFloat CA::MetalLayer::contentsScale() const {
+	return sendMessage<CGFloat>(this, _CA_PRIVATE_SEL(contentsScale));
 }
