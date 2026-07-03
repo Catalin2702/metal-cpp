@@ -4,7 +4,7 @@
 # Created by: Catalin Chirosca
 # Created: 2026-06-26
 # Updated by: Catalin Chirosca
-# Updated: 2026-07-02
+# Updated: 2026-07-03
 #
 
 cmake_minimum_required(VERSION 3.21)
@@ -241,6 +241,12 @@ target_link_libraries(METAL_CPP INTERFACE
 
 target_include_directories(METAL_CPP INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set_target_properties(METAL_CPP PROPERTIES
+	LINKER_LANGUAGE CXX
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${PROJECT_VERSION}
 )
 
 # Build the tests only when metal-cpp is the top-level project (standalone
