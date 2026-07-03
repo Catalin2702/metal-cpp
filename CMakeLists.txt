@@ -237,6 +237,7 @@ target_link_libraries(METAL_CPP INTERFACE
 	"-framework AppKit"
 	"-framework Foundation"
 	"-framework QuartzCore"
+	"-framework GameController"
 )
 
 target_include_directories(METAL_CPP INTERFACE
