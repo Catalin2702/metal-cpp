@@ -4,7 +4,7 @@
 // Created by: Catalin Chirosca
 // Created: 2026-06-29
 // Updated by: Catalin Chirosca
-// Updated: 2026-07-02
+// Updated: 2026-07-03
 // Notes: Verifies that the NS::WindowDelegate base forwards through virtual overrides
 // and that its defaults behave as documented.
 //
@@ -15,7 +15,7 @@
 
 namespace
 {
-	struct RecordingWindowDelegate : NS::I_WindowDelegate
+	struct RecordingWindowDelegate : NS::I_WindowEventDispatcher
 	{
 		bool resized = false;
 
@@ -27,7 +27,7 @@ namespace
 TEST(AppKitWindowDelegate, VirtualOverridesAreInvoked)
 {
 	RecordingWindowDelegate delegate;
-	NS::I_WindowDelegate& base = delegate;
+	NS::I_WindowEventDispatcher& base = delegate;
 
 	base.windowDidResize(nullptr);
 
@@ -37,7 +37,7 @@ TEST(AppKitWindowDelegate, VirtualOverridesAreInvoked)
 
 TEST(AppKitWindowDelegate, DefaultShouldCloseIsTrue)
 {
-	NS::I_WindowDelegate base;
+	NS::I_WindowEventDispatcher base;
 
 	EXPECT_TRUE(base.windowShouldClose(nullptr));
 	EXPECT_NO_THROW(base.windowWillClose(nullptr));

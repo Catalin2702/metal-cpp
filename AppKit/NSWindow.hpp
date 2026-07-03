@@ -44,12 +44,12 @@ namespace NS {
 
 // Receives the AppKit notifications sent to an NSWindow's delegate. Subclass it,
 // override the callbacks you need, and attach an instance with
-// Window::setDelegate(const I_WindowDelegate*). The window retains the wrapper that
+// Window::setDelegate(const I_WindowEventDispatcher*). The window retains the wrapper that
 // holds the pointer but does not own the C++ object, so the delegate must outlive
 // the window.
-class I_WindowDelegate {
+class I_WindowEventDispatcher {
 public:
-	virtual ~I_WindowDelegate() = default;
+	virtual ~I_WindowEventDispatcher() = default;
 
 	virtual void windowDidResize([[maybe_unused]] Notification* pNotification) {}
 	virtual void windowDidMove([[maybe_unused]] Notification* pNotification) {}
@@ -103,7 +103,7 @@ public:
 public:
 	void setContentView(const View* pContentView) const;
 	void setDelegate(const Object* pDelegate) const;
-	void setDelegate(const I_WindowDelegate* pDelegate) const;
+	void setDelegate(const I_WindowEventDispatcher* pDelegate) const;
 	void setFrameAutosaveName(const String* pName) const;
 	void setFrameUsingName(const String* pName) const;
 	void setFrame(const CGRect& frame, bool display = true) const;
@@ -311,7 +311,7 @@ _NS_INLINE const void* windowDelegateKey() {
 }
 }
 
-_NS_INLINE void NS::Window::setDelegate(const I_WindowDelegate* pDelegate) const {
+_NS_INLINE void NS::Window::setDelegate(const I_WindowEventDispatcher* pDelegate) const {
 	// Wrap the C++ delegate in an NSValue and register Objective-C trampolines on
 	// the NSValue class. Each trampoline reads the delegate back through
 	// pointerValue() and forwards to the matching C++ method.
@@ -322,7 +322,7 @@ _NS_INLINE void NS::Window::setDelegate(const I_WindowDelegate* pDelegate) const
 	#define _NS_FWD_WINDOW_NOTE( objcSel, cppMethod )                                            \
 		do {                                                                                     \
 			void (*fn)(Value*, SEL, void*) = [](Value* pSelf, SEL, void* pNotification){         \
-				reinterpret_cast<I_WindowDelegate*>(pSelf->pointerValue())->cppMethod(             \
+				reinterpret_cast<I_WindowEventDispatcher*>(pSelf->pointerValue())->cppMethod(             \
 					static_cast<Notification*>(pNotification));                                  \
 			};                                                                                   \
 			class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(objcSel), (IMP)fn, "v@:@");        \
@@ -342,7 +342,7 @@ _NS_INLINE void NS::Window::setDelegate(const I_WindowDelegate* pDelegate) const
 
 	// windowShouldClose: returns a BOOL and receives the window itself.
 	bool (*shouldClose)(Value*, SEL, Window*) = [](Value* pSelf, SEL, Window* pSender){
-		return static_cast<I_WindowDelegate*>(pSelf->pointerValue())->windowShouldClose(pSender);
+		return static_cast<I_WindowEventDispatcher*>(pSelf->pointerValue())->windowShouldClose(pSender);
 	};
 	class_addMethod(wrapperClass, _APPKIT_PRIVATE_SEL(windowShouldClose_), (IMP)shouldClose, "B@:@");
 

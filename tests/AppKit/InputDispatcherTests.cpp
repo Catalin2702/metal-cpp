@@ -4,7 +4,7 @@
 // Created by: Catalin Chirosca
 // Created: 2026-06-29
 // Updated by: Catalin Chirosca
-// Updated: 2026-07-02
+// Updated: 2026-07-03
 // Notes: Verifies that the NS::ViewInputDispatcher base (a real, vtable-backed C++ class)
 // forwards through virtual overrides. No Objective-C objects are touched,
 // so these run anywhere.
@@ -16,7 +16,7 @@
 
 namespace
 {
-	struct CountingDispatcher : NS::I_ViewInputDispatcher
+	struct CountingDispatcher : NS::I_ViewEventDispatcher
 	{
 		int mouseDowns = 0;
 		int scrolls = 0;
@@ -29,7 +29,7 @@ namespace
 TEST(AppKitViewInputDispatcher, VirtualOverridesAreInvoked)
 {
 	CountingDispatcher dispatcher;
-	NS::I_ViewInputDispatcher& base = dispatcher;
+	NS::I_ViewEventDispatcher& base = dispatcher;
 
 	base.DispatchMouseDown(nullptr);
 	base.DispatchMouseDown(nullptr);
@@ -41,7 +41,7 @@ TEST(AppKitViewInputDispatcher, VirtualOverridesAreInvoked)
 
 TEST(AppKitViewInputDispatcher, DefaultHandlersAreNoops)
 {
-	NS::I_ViewInputDispatcher base;
+	NS::I_ViewEventDispatcher base;
 
 	EXPECT_NO_THROW(base.DispatchMouseDown(nullptr));
 	EXPECT_NO_THROW(base.DispatchKeyDown(nullptr));

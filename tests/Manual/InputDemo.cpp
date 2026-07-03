@@ -4,7 +4,7 @@
 // Created by: Catalin Chirosca
 // Created: 2026-06-29
 // Updated by: Catalin Chirosca
-// Updated: 2026-07-02
+// Updated: 2026-07-03
 // Notes: Manual, interactive demo (NOT a CTest test): opens a real NSWindow with an
 // MTKView, attaches an NS::ViewInputDispatcher and logs the mouse / keyboard /
 // scroll events it receives to stdout. Build and run it by hand:
@@ -25,7 +25,7 @@
 namespace
 {
 	// Logs every event forwarded by NS::View to its dispatcher.
-	class InputLogger : public NS::I_ViewInputDispatcher
+	class InputLogger : public NS::I_ViewEventDispatcher
 	{
 		public:
 			void DispatchMouseDown(NS::Event* pEvent) override { logMouse("mouseDown", pEvent); }

@@ -46,10 +46,10 @@ namespace NS
 	// the handlers you need, and attach an instance with View::setEventDispatcher().
 	// The view retains the wrapper that holds the pointer, but does not own the C++
 	// object, so the dispatcher must outlive the view.
-	class I_ViewInputDispatcher
+	class I_ViewEventDispatcher
 	{
 		public:
-			virtual ~I_ViewInputDispatcher() = default;
+			virtual ~I_ViewEventDispatcher() = default;
 
 			virtual void DispatchMouseDown( [[maybe_unused]] Event* pEvent ) { }
 			virtual void DispatchMouseUp( [[maybe_unused]] Event* pEvent ) { }
@@ -89,8 +89,8 @@ namespace NS
 			// Attach a dispatcher that receives this view's mouse / keyboard /
 			// scroll events. The first call also installs the NSResponder methods
 			// on the view's Objective-C class, so no manual registration is needed.
-			void setEventDispatcher(const I_ViewInputDispatcher* pDispatcher) const;
-			I_ViewInputDispatcher* eventDispatcher() const;
+			void setEventDispatcher(const I_ViewEventDispatcher* pDispatcher) const;
+			I_ViewEventDispatcher* eventDispatcher() const;
 
 			// Installs the mouse / keyboard / scroll NSResponder methods on this
 			// view's class. Idempotent; normally triggered for you by
@@ -139,7 +139,7 @@ namespace NS::Private {
 	}
 }
 
-_NS_INLINE void NS::View::setEventDispatcher(const I_ViewInputDispatcher* pDispatcher) const {
+_NS_INLINE void NS::View::setEventDispatcher(const I_ViewEventDispatcher* pDispatcher) const {
 	registerInputHandlers( this );
 
 	Value* pWrapper = Value::value( pDispatcher );
@@ -150,13 +150,13 @@ _NS_INLINE void NS::View::setEventDispatcher(const I_ViewInputDispatcher* pDispa
 #endif
 }
 
-_NS_INLINE NS::I_ViewInputDispatcher* NS::View::eventDispatcher() const {
+_NS_INLINE NS::I_ViewEventDispatcher* NS::View::eventDispatcher() const {
 #ifdef __OBJC__
 	Value* pWrapper = (__bridge Value*)objc_getAssociatedObject( (__bridge id)this, Private::viewEventDispatcherKey() );
 #else
 	Value* pWrapper = (Value*)objc_getAssociatedObject( (id)this, Private::viewEventDispatcherKey() );
 #endif
-	return pWrapper ? reinterpret_cast< I_ViewInputDispatcher* >( pWrapper->pointerValue() ) : nullptr;
+	return pWrapper ? reinterpret_cast< I_ViewEventDispatcher* >( pWrapper->pointerValue() ) : nullptr;
 }
 
 namespace NS::Private {
@@ -168,11 +168,11 @@ namespace NS::Private {
 	// Idempotent: a spare IMP is dropped if the class already implements the method.
 	// '::Class' is qualified because NS::Private also contains a 'Class' namespace
 	// (the runtime class-symbol table), which would otherwise shadow the type.
-_NS_INLINE void installViewResponder(::Class pViewClass, ::Class pSuperClass, const char* pSelectorName, void (I_ViewInputDispatcher::* pMethod)(Event*)) {
+_NS_INLINE void installViewResponder(::Class pViewClass, ::Class pSuperClass, const char* pSelectorName, void (I_ViewEventDispatcher::* pMethod)(Event*)) {
 	SEL sel = sel_registerName( pSelectorName );
 
 	void (^block)(View*, Event*) = ^(View* pSelf, Event* pEvent) {
-		if ( I_ViewInputDispatcher* pDispatcher = pSelf->eventDispatcher() ) {
+		if ( I_ViewEventDispatcher* pDispatcher = pSelf->eventDispatcher() ) {
 			(pDispatcher->*pMethod)( pEvent );
 		} else {
 #ifdef __OBJC__
@@ -203,7 +203,7 @@ _NS_INLINE void NS::View::registerInputHandlers(const View* pView) {
 #endif
 	Class superClass = class_getSuperclass( viewClass );
 
-	using D = I_ViewInputDispatcher;
+	using D = I_ViewEventDispatcher;
 	Private::installViewResponder( viewClass, superClass, "mouseDown:",         &D::DispatchMouseDown );
 	Private::installViewResponder( viewClass, superClass, "mouseUp:",           &D::DispatchMouseUp );
 	Private::installViewResponder( viewClass, superClass, "mouseDragged:",      &D::DispatchMouseDragged );
