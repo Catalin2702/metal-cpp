@@ -94,6 +94,12 @@ namespace NS
 
 			CA::MetalLayer* layer() const;
 
+			// Converts a point from the coordinate system of 'pView' to this view's.
+			// Pass nullptr for 'pView' to convert from the window's base coordinates.
+			CGPoint convertPointFromView(const CGPoint& point, const View* pView) const;
+
+			CGPoint convertPointFromView(const CGPoint& point) const;
+
 			// Creates a display link tied to this view's display. The link invokes
 			// 'selector' on 'pTarget' each vsync; the method must have the signature
 			// (void)selector:(CA::DisplayLink*). Add it to a run loop to start it.
@@ -138,6 +144,14 @@ _NS_INLINE void NS::View::setWantsLayer(const bool wantsLayer) const {
 
 _NS_INLINE CA::MetalLayer* NS::View::layer() const {
 	return sendMessage<CA::MetalLayer*>(this, _APPKIT_PRIVATE_SEL( layer ));
+}
+
+_NS_INLINE CGPoint NS::View::convertPointFromView(const CGPoint& point, const View* pView) const {
+	return sendMessage<CGPoint>(this, _APPKIT_PRIVATE_SEL( convertPoint_fromView_ ), point, pView);
+}
+
+_NS_INLINE CGPoint NS::View::convertPointFromView(const CGPoint& point) const {
+	return sendMessage<CGPoint>(this, _APPKIT_PRIVATE_SEL( convertPoint_fromView_ ), point, this);
 }
 
 _NS_INLINE CA::DisplayLink* NS::View::displayLink(const Object* pTarget, SEL selector) const {
