@@ -119,6 +119,7 @@ public:
 
 	void center() const;
 	void miniaturize(const Object* pSender) const;
+	void deminiaturize(const Object* pSender) const;
 	void toggleFullScreen(const Object* pSender) const;
 
 public:
@@ -229,6 +230,10 @@ _NS_INLINE void NS::Window::center() const {
 
 _NS_INLINE void NS::Window::miniaturize(const Object* pSender) const {
 	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(miniaturize_), pSender);
+}
+
+_NS_INLINE void NS::Window::deminiaturize(const Object* pSender) const {
+	sendMessage<void>(this, _APPKIT_PRIVATE_SEL(deminiaturize_), pSender);
 }
 
 _NS_INLINE void NS::Window::toggleFullScreen(const Object* pSender) const {
