@@ -7,7 +7,7 @@
 # Updated: 2026-07-03
 #
 
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 4.1)
 
 project(MetalCpp LANGUAGES CXX VERSION 27.0.2)
 
