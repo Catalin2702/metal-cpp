@@ -4,12 +4,12 @@
 # Created by: Catalin Chirosca
 # Created: 2026-06-26
 # Updated by: Catalin Chirosca
-# Updated: 2026-08-13
+# Updated: 2026-09-06
 #
 
 cmake_minimum_required(VERSION 4.1)
 
-project(MetalCpp LANGUAGES CXX VERSION 27.0.2)
+project(MetalCpp LANGUAGES CXX VERSION 27.0.3)
 
 if(NOT APPLE)
 	message(FATAL_ERROR
