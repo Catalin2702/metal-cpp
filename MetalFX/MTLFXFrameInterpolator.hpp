@@ -28,6 +28,8 @@
 
 #include "../Metal/Metal.hpp"
 
+#include <simd/simd.h>
+
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 namespace MTL4FX
@@ -172,6 +174,12 @@ namespace MTLFX
 
         float             aspectRatio() const;
         void              setAspectRatio( float aspectRatio );
+
+        simd::float4x4    worldToViewMatrix() const;
+        void              setWorldToViewMatrix( simd::float4x4 worldToViewMatrix );
+
+        simd::float4x4    viewToClipMatrix() const;
+        void              setViewToClipMatrix( simd::float4x4 viewToClipMatrix );
 
         MTL::Texture*     uiTexture() const;
         void              setUITexture(MTL::Texture* uiTexture);
@@ -833,6 +841,34 @@ _MTLFX_INLINE float  MTLFX::FrameInterpolatorBase::aspectRatio() const
 _MTLFX_INLINE void   MTLFX::FrameInterpolatorBase::setAspectRatio( float aspectRatio )
 {
     NS::Object::sendMessage< void >( this, _MTLFX_PRIVATE_SEL( setAspectRatio_ ), aspectRatio );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE simd::float4x4 MTLFX::FrameInterpolatorBase::worldToViewMatrix() const
+{
+    return NS::Object::sendMessage< simd::float4x4 >( this, _MTLFX_PRIVATE_SEL( worldToViewMatrix ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::FrameInterpolatorBase::setWorldToViewMatrix( simd::float4x4 worldToViewMatrix )
+{
+    return NS::Object::sendMessage< void >( this, _MTLFX_PRIVATE_SEL( setWorldToViewMatrix_ ), worldToViewMatrix );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE simd::float4x4 MTLFX::FrameInterpolatorBase::viewToClipMatrix() const
+{
+    return NS::Object::sendMessage< simd::float4x4 >( this, _MTLFX_PRIVATE_SEL( viewToClipMatrix ) );
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+_MTLFX_INLINE void MTLFX::FrameInterpolatorBase::setViewToClipMatrix( simd::float4x4 viewToClipMatrix )
+{
+    return NS::Object::sendMessage< void >( this, _MTLFX_PRIVATE_SEL( setViewToClipMatrix_ ), viewToClipMatrix );
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------
