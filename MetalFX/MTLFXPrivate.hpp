@@ -546,7 +546,7 @@ namespace MTLFX
             _MTLFX_PRIVATE_DEF_SEL( uiTextureFormat,
                                     "uiTextureFormat" );
             _MTLFX_PRIVATE_DEF_SEL( uiTextureUsage,
-                                    "uiTextureFormat" );
+                                    "uiTextureUsage" );
             _MTLFX_PRIVATE_DEF_SEL( viewToClipMatrix,
                                     "viewToClipMatrix" );
             _MTLFX_PRIVATE_DEF_SEL( width,

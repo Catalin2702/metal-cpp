@@ -507,6 +507,8 @@ _MTL_PRIVATE_DEF_SEL(constantValues,
     "constantValues");
 _MTL_PRIVATE_DEF_SEL(containsAllocation_,
     "containsAllocation:");
+_MTL_PRIVATE_DEF_SEL(contentionRelief,
+    "contentionRelief");
 _MTL_PRIVATE_DEF_SEL(contents,
     "contents");
 _MTL_PRIVATE_DEF_SEL(controlDependencies,
@@ -761,6 +763,8 @@ _MTL_PRIVATE_DEF_SEL(floatingPointConversionRoundingMode,
     "floatingPointConversionRoundingMode");
 _MTL_PRIVATE_DEF_SEL(format,
     "format");
+_MTL_PRIVATE_DEF_SEL(forwardProgressUsage,
+    "forwardProgressUsage");
 _MTL_PRIVATE_DEF_SEL(fragmentAdditionalBinaryFunctions,
     "fragmentAdditionalBinaryFunctions");
 _MTL_PRIVATE_DEF_SEL(fragmentArguments,
@@ -1177,6 +1181,8 @@ _MTL_PRIVATE_DEF_SEL(meshThreadgroupSizeIsMultipleOfThreadExecutionWidth,
     "meshThreadgroupSizeIsMultipleOfThreadExecutionWidth");
 _MTL_PRIVATE_DEF_SEL(minFilter,
     "minFilter");
+_MTL_PRIVATE_DEF_SEL(minLOD,
+    "minLOD");
 _MTL_PRIVATE_DEF_SEL(minimumLinearTextureAlignmentForPixelFormat_,
     "minimumLinearTextureAlignmentForPixelFormat:");
 _MTL_PRIVATE_DEF_SEL(minimumTextureBufferAlignmentForPixelFormat_,
@@ -1523,6 +1529,8 @@ _MTL_PRIVATE_DEF_SEL(optimizeContentsForGPUAccess_,
     "optimizeContentsForGPUAccess:");
 _MTL_PRIVATE_DEF_SEL(optimizeContentsForGPUAccess_slice_level_,
     "optimizeContentsForGPUAccess:slice:level:");
+_MTL_PRIVATE_DEF_SEL(optimizeForPersistentKernel,
+    "optimizeForPersistentKernel");
 _MTL_PRIVATE_DEF_SEL(optimizeIndirectCommandBuffer_withRange_,
     "optimizeIndirectCommandBuffer:withRange:");
 _MTL_PRIVATE_DEF_SEL(options,
@@ -1637,6 +1645,8 @@ _MTL_PRIVATE_DEF_SEL(readWriteTextureSupport,
     "readWriteTextureSupport");
 _MTL_PRIVATE_DEF_SEL(recommendedMaxWorkingSetSize,
     "recommendedMaxWorkingSetSize");
+_MTL_PRIVATE_DEF_SEL(recommendedPersistentThreadgroupsPerGridForThreadsPerThreadgroup_,
+    "recommendedPersistentThreadgroupsPerGridForThreadsPerThreadgroup:");
 _MTL_PRIVATE_DEF_SEL(reductionMode,
     "reductionMode");
 _MTL_PRIVATE_DEF_SEL(refitAccelerationStructure_descriptor_destination_scratchBuffer_,
@@ -1911,6 +1921,8 @@ _MTL_PRIVATE_DEF_SEL(setConstantValues_,
     "setConstantValues:");
 _MTL_PRIVATE_DEF_SEL(setConstantValues_type_withRange_,
     "setConstantValues:type:withRange:");
+_MTL_PRIVATE_DEF_SEL(setContentionRelief_,
+    "setContentionRelief:");
 _MTL_PRIVATE_DEF_SEL(setControlDependencies_,
     "setControlDependencies:");
 _MTL_PRIVATE_DEF_SEL(setControlPointBuffer_,
@@ -2009,6 +2021,8 @@ _MTL_PRIVATE_DEF_SEL(setFloatingPointConversionRoundingMode_,
     "setFloatingPointConversionRoundingMode:");
 _MTL_PRIVATE_DEF_SEL(setFormat_,
     "setFormat:");
+_MTL_PRIVATE_DEF_SEL(setForwardProgressUsage_,
+    "setForwardProgressUsage:");
 _MTL_PRIVATE_DEF_SEL(setFragmentAccelerationStructure_atBufferIndex_,
     "setFragmentAccelerationStructure:atBufferIndex:");
 _MTL_PRIVATE_DEF_SEL(setFragmentAdditionalBinaryFunctions_,
@@ -2285,6 +2299,8 @@ _MTL_PRIVATE_DEF_SEL(setMeshThreadgroupSizeIsMultipleOfThreadExecutionWidth_,
     "setMeshThreadgroupSizeIsMultipleOfThreadExecutionWidth:");
 _MTL_PRIVATE_DEF_SEL(setMinFilter_,
     "setMinFilter:");
+_MTL_PRIVATE_DEF_SEL(setMinLOD_,
+    "setMinLOD:");
 _MTL_PRIVATE_DEF_SEL(setMipFilter_,
     "setMipFilter:");
 _MTL_PRIVATE_DEF_SEL(setMipmapLevelCount_,
@@ -2371,6 +2387,8 @@ _MTL_PRIVATE_DEF_SEL(setOpaqueTriangleIntersectionFunctionWithSignature_withRang
     "setOpaqueTriangleIntersectionFunctionWithSignature:withRange:");
 _MTL_PRIVATE_DEF_SEL(setOptimizationLevel_,
     "setOptimizationLevel:");
+_MTL_PRIVATE_DEF_SEL(setOptimizeForPersistentKernel_,
+    "setOptimizeForPersistentKernel:");
 _MTL_PRIVATE_DEF_SEL(setOptions_,
     "setOptions:");
 _MTL_PRIVATE_DEF_SEL(setOutputNode_,

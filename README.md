@@ -19,6 +19,7 @@ For more information see also: https://developer.apple.com/metal/cpp
 
 | Version | Changes |
 |-|-|
+| macOS 27.0.1, iOS 27.0.1 | Add the Metal APIs to support the **Apple11** GPU family. Improvements and fixes. |
 | macOS 27, iOS 27 | Add all the new Metal APIs in macOS 27 and iOS 27 |
 | macOS 26.4, iOS 26.4 | Add all the Metal APIs in macOS 26.4, iOS 26.4. Improvements and fixes. |
 | macOS 26, iOS 26 | Add all the Metal APIs in macOS 26, iOS 26, including support for the **Apple10** GPU family. <br/>Add support for Metal 4 and new denoiser and temporal scalers in MetalFX.|
