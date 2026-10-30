@@ -11,3 +11,6 @@
 # --- IA Tools ---
 CLAUDE.md
 graphify-out
+
+# --- Build & Tests ---
+/.build/

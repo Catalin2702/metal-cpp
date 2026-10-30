@@ -1,0 +1,139 @@
+{
+	"version": 10,
+	"cmakeMinimumRequired": {
+		"major": 4,
+		"minor": 1,
+		"patch": 0
+	},
+	"$comment": [
+		"Module: metal-cpp",
+		"File: CMakePresets.json",
+		"Created by: Catalin Chirosca",
+		"Created: 2026-10-30",
+		"Updated by: Catalin Chirosca",
+		"Updated: 2026-10-30",
+		"",
+		"metal-cpp only builds on Apple platforms with AppleClang or LLVM Clang, so every",
+		"configure preset is gated on a Darwin host. All generators are multi-config, so the",
+		"build type lives in the build/test presets (via 'configuration') instead of in a",
+		"configure preset per type: CMake forbids a build preset from referencing a hidden",
+		"configure preset, so this keeps the IDE preset picker readable."
+	],
+	"configurePresets": [
+		{
+			"name": "config-preset-base",
+			"hidden": true,
+			"binaryDir": "${sourceDir}/.build/${presetName}",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Darwin"
+			},
+			"cacheVariables": {
+				"CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+				"METALCPP_BUILD_TESTS": "ON"
+			}
+		},
+		{
+			"name": "config-preset-ninja-multi",
+			"hidden": true,
+			"inherits": "config-preset-base",
+			"generator": "Ninja Multi-Config"
+		},
+		{
+			"name": "config-preset-clang",
+			"displayName": "Config-Preset Clang",
+			"inherits": "config-preset-ninja-multi",
+			"binaryDir": "${sourceDir}/.build/clang",
+			"condition": {
+				"type": "allOf",
+				"conditions": [
+					{
+						"type": "equals",
+						"lhs": "${hostSystemName}",
+						"rhs": "Darwin"
+					},
+					{
+						"type": "notEquals",
+						"lhs": "$env{CLANG_CMAKE_CXX_COMPILER}",
+						"rhs": ""
+					}
+				]
+			},
+			"cacheVariables": {
+				"CMAKE_CXX_COMPILER": "$env{CLANG_CMAKE_CXX_COMPILER}"
+			}
+		},
+		{
+			"name": "config-preset-appleclang",
+			"displayName": "Config-Preset AppleClang",
+			"inherits": "config-preset-ninja-multi",
+			"binaryDir": "${sourceDir}/.build/appleclang",
+			"cacheVariables": {
+				"CMAKE_CXX_COMPILER": "/usr/bin/clang++"
+			}
+		},
+		{
+			"name": "config-preset-xcode",
+			"displayName": "Config-Preset Xcode",
+			"inherits": "config-preset-base",
+			"generator": "Xcode",
+			"binaryDir": "${sourceDir}/.build/xcode"
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "build-preset-base",
+			"hidden": true
+		},
+		{
+			"name": "build-preset-clang-multi",
+			"displayName": "Build-Preset Clang-Multi",
+			"inherits": "build-preset-base",
+			"configurePreset": "config-preset-clang"
+		},
+		{
+			"name": "build-preset-appleclang-multi",
+			"displayName": "Build-Preset AppleClang-Multi",
+			"inherits": "build-preset-base",
+			"configurePreset": "config-preset-appleclang"
+		},
+		{
+			"name": "build-preset-xcode-multi",
+			"displayName": "Build-Preset Xcode-Multi",
+			"inherits": "build-preset-base",
+			"configurePreset": "config-preset-xcode"
+		}
+	],
+	"testPresets": [
+		{
+			"name": "test-preset-base",
+			"hidden": true,
+			"output": {
+				"outputOnFailure": true
+			},
+			"execution": {
+				"noTestsAction": "error",
+				"stopOnFailure": false
+			}
+		},
+		{
+			"name": "test-preset-clang-multi",
+			"displayName": "Test-Preset Clang-Multi",
+			"inherits": "test-preset-base",
+			"configurePreset": "config-preset-clang"
+		},
+		{
+			"name": "test-preset-appleclang-multi",
+			"displayName": "Test-Preset AppleClang-Multi",
+			"inherits": "test-preset-base",
+			"configurePreset": "config-preset-appleclang"
+		},
+		{
+			"name": "test-preset-xcode-multi",
+			"displayName": "Test-Preset Xcode-Multi",
+			"inherits": "test-preset-base",
+			"configurePreset": "config-preset-xcode"
+		}
+	]
+}

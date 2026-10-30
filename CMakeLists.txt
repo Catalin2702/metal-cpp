@@ -9,7 +9,7 @@
 
 cmake_minimum_required(VERSION 4.1)
 
-project(MetalCpp LANGUAGES CXX VERSION 27.0.3)
+project(MetalCpp LANGUAGES CXX VERSION 27.0.1.0)
 
 if(NOT APPLE)
 	message(FATAL_ERROR
